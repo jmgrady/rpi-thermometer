@@ -1,0 +1,31 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Misc
+.DS_Store
+.eslintcache
+
+# Visual Studio
+.vs
+
+# Python
+.tox
+.mypy_cache
+__pycache__
+*.pyc
+venv
+raspi-blinka.py
+
+# temperature log files
+data/*
+
+# YAML files for ad hoc testing/development
+*.hosts.yml
+*.hosts.yaml
+_*.yml
+_*.yaml
+_*.j2
+dev_*.yaml
+
+# Emacs backup files (this is Jim's fault)
+*~
+\#*#
