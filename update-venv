@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Function to log messages to stderr if $QUIET is not set
+log () {
+    if (( $QUIET == 0 )) ; then
+        echo $1 1>&2
+    fi
+}
+
+# Set default values
+COMPILE_DEPS=0
+QUIET=0
+# Parse arguments
+while [ "${#@}" -gt "0" ] ; do
+    opt=$1
+    case "$opt" in
+        --build)
+            COMPILE_DEPS=1
+            ;;
+        -q|--quiet)
+            QUIET=1
+            ;;
+        *)
+            echo "Unrecognized option, $opt"
+            ;;
+    esac
+    shift
+done
+
+if ! which deactivate ; then
+    . venv/bin/activate
+fi
+
+log "Installing/upgrading pip-tools"
+pip install --upgrade pip-tools
+
+if (( $COMPILE_DEPS > 0 )) ; then
+    log "Update pinned dependencies"
+    python -m piptools compile --upgrade requirements.in
+fi
+
+log "Syncing dependencies"
+python -m piptools sync requirements.txt
+
+# if ! pip list | grep hw-services ; then
+#     pip install -e .
+# fi

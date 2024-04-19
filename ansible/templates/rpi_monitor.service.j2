@@ -1,0 +1,13 @@
+[Unit]
+Description={{ item.description }}
+After=network.target
+
+[Service]
+Type=exec
+ExecStart={{ rpi_service_wrapper }} {{ item.script }}
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

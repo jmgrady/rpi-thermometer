@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Function to log messages to stderr if $QUIET is not set
+log () {
+    if (( $QUIET == 0 )) ; then
+        echo $1 1>&2
+    fi
+}
+
+# Set default values
+QUIET=0
+# Parse arguments
+while [ "${#@}" -gt "0" ] ; do
+    opt=$1
+    case "$opt" in
+        -q|--quiet)
+            QUIET=1
+            ;;
+        *)
+            echo "Unrecognized option, $opt"
+            ;;
+    esac
+    shift
+done
+
+log "Removing old virtual environment"
+# Deactivate the virtual environment if it is active
+if which deactivate ; then
+    deactivate
+fi
+
+# Remove old venv, tox cache
+for dir in venv .tox ; do
+    if [ -d "$dir" ] ;  then
+        log "   - Removing $dir"
+        rm -rf $dir
+    fi
+done
+
+log "Creating virtual environment"
+python3 -m venv venv --system-site-packages
+. venv/bin/activate
+
+log "Installing adafruit shell and blinka"
+pip install --upgrade adafruit-python-shell
+wget -O raspi-blinka.py https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
+sudo -E env PATH=$PATH python3 raspi-blinka.py
