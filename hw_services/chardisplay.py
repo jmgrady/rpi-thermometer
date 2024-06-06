@@ -52,8 +52,8 @@ class CharDisplay:
     def move(self, column: int, row: int) -> None:
         if column < self.num_cols and row < self.num_rows:
             self.ser.write(bytearray(b"\xfe\x47"))
-            self.ser.write(bytearray(column.to_bytes()))
-            self.ser.write(bytearray(row.to_bytes()))
+            self.ser.write(bytearray(column.to_bytes(1, "little")))
+            self.ser.write(bytearray(row.to_bytes(1, "little")))
             self.ser.write(bytearray(b"\x0a"))
             self.ser.flushOutput()
 

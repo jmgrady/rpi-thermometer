@@ -1,0 +1,4 @@
+---
+# create the Python venv
+- name: Install required global packages
+  apt:
