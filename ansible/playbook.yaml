@@ -14,6 +14,8 @@
   gather_facts: true
   become: true
 
+  vars_files:
+    - vars/config_common.yml
   vars:
     rpi_services_dir: /opt/rpi
     rpi_service_wrapper: "{{ rpi_services_dir }}/python-service"
@@ -22,52 +24,66 @@
     temp_data_dir: "{{ rpi_services_dir }}/data"
 
   tasks:
-    - name: "Setup Python virtual environment"
-
-    - name: "Setup Raspberry Pi interfaces"
-      import_role:
-        name: rpi_interfaces
-
-    - name: "Install rpi service wrapper"
-      template:
-        src: rpi_service_wrapper.sh
-        dest: "{{ rpi_service_wrapper }}"
-        mode: 0755
-        owner: root
-        group: root
-
-    - name: "Create temperature data directory"
+    - name: "Create install directory"
       file:
-        name: "{{ temp_data_dir }}"
+        path: "{{ install_dir }}"
         state: directory
         owner: root
         group: root
         mode: 0755
 
-    - name: "Create rpi service files"
-      template:
-        src: rpi_monitor.service.j2
-        dest: /usr/lib/systemd/system/{{ item.name }}.service
-        owner: root
-        group: root
-        mode: 0755
-      loop:
-        - {
-            name: display-ip-addr,
-            description: Display IP address,
-            script: "{{ rpi_services_dir }}/hw_services/monitorip.py",
-          }
-        - {
-            name: temperature-logger,
-            description: Log temperature measurements to a local file,
-            script: "{{ rpi_services_dir }}/hw_services/templogger.py --period {{ temp_meas_period }}",
-          }
-    - name: "Enable and start the services"
-      systemd:
-        name: "{{ item }}"
-        state: started
-        enabled: true
-        daemon_reload: true
-      loop:
-        - display-ip-addr.service
-        - temperature-logger.service
+    - name: "Setup Python virtual environment"
+      import_role:
+        name: python_venv
+
+    - name: "Configure RPi interfaces"
+      import_role:
+        name: configure_rpi
+
+    # - name: "Setup Raspberry Pi interfaces"
+    #   import_role:
+    #     name: rpi_interfaces
+
+    # - name: "Install rpi service wrapper"
+    #   template:
+    #     src: rpi_service_wrapper.sh
+    #     dest: "{{ rpi_service_wrapper }}"
+    #     mode: 0755
+    #     owner: root
+    #     group: root
+
+    # - name: "Create temperature data directory"
+    #   file:
+    #     name: "{{ temp_data_dir }}"
+    #     state: directory
+    #     owner: root
+    #     group: root
+    #     mode: 0755
+
+    # - name: "Create rpi service files"
+    #   template:
+    #     src: rpi_monitor.service.j2
+    #     dest: /usr/lib/systemd/system/{{ item.name }}.service
+    #     owner: root
+    #     group: root
+    #     mode: 0755
+    #   loop:
+    #     - {
+    #         name: display-ip-addr,
+    #         description: Display IP address,
+    #         script: "{{ rpi_services_dir }}/hw_services/monitorip.py",
+    #       }
+    #     - {
+    #         name: temperature-logger,
+    #         description: Log temperature measurements to a local file,
+    #         script: "{{ rpi_services_dir }}/hw_services/templogger.py --period {{ temp_meas_period }}",
+    #       }
+    # - name: "Enable and start the services"
+    #   systemd:
+    #     name: "{{ item }}"
+    #     state: started
+    #     enabled: true
+    #     daemon_reload: true
+    #   loop:
+    #     - display-ip-addr.service
+    #     - temperature-logger.service

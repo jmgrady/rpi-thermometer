@@ -1,0 +1,6 @@
+# Circuit Pi
+adafruit-blinka
+adafruit-circuitpython-debouncer
+adafruit-circuitpython-max31865
+adafruit-python-shell
+RPi.GPIO

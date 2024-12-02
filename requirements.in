@@ -19,6 +19,7 @@ pep8-naming
 black
 isort
 
+# Circuit Pi
 adafruit-blinka
 adafruit-circuitpython-debouncer
 adafruit-circuitpython-max31865

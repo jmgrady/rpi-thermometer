@@ -1,4 +1,23 @@
 ---
 # create the Python venv
+
 - name: Install required global packages
   apt:
+    name:
+      - python3-venv
+      - python3-pip
+
+- name: Install Python requirements file
+  copy:
+    src: "requirements.in"
+    dest: "{{ install_dir }}/requirements.in"
+
+- name: Create the virtual environment
+  shell:
+    cmd: |
+      python3 -m venv venv
+      source venv/bin/activate
+      python -m pip install --upgrade pip pip-tools
+      python -m piptools compile --upgrade requirements.in
+      python -m piptools sync requirements.txt
+    chdir: "{{ install_dir }}"
