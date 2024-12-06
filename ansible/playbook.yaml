@@ -36,9 +36,9 @@
       import_role:
         name: python_venv
 
-    - name: "Configure RPi interfaces"
-      import_role:
-        name: configure_rpi
+    # - name: "Configure RPi interfaces"
+    #   import_role:
+    #     name: configure_rpi
 
     # - name: "Setup Raspberry Pi interfaces"
     #   import_role:
