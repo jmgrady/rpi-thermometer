@@ -1,4 +1,0 @@
----
-# install adafruit CircuitPython for Raspberry Pi with the following changes:
-#  - configure which interfaces are turned on (the adafruit library turns them all on)
-#  - add optional overlays, e.g. 1-wire and gpio-shutdown

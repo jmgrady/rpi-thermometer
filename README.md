@@ -2,18 +2,7 @@
 
 ## Setup
 
-### Python Virtual Environment
-
-The services need to run in a virtual environment on the Raspberry Pi.
-
-#### Create a Virtual Environment
-
-1. Install the required packages from `apt`:
-
-   ```console
-   sudo apt install python3-venv python3-pip
-   sudo apt install --upgrade python3-setuptools
-   ```
+1. Install _Ansible_ - either as an application or as a Python module in a virtual environment.
 
 2. Clone the repo from github:
 
@@ -21,42 +10,29 @@ The services need to run in a virtual environment on the Raspberry Pi.
    git clone https://github.com/jmgrady/rpi-setup
    ```
 
-3. Create the virtual environment and install CircuitPython:
+3. Install the Python services on the Raspberry Pi
 
    ```console
    cd rpi-setup
-   ./new-venv
+   ansible-playbook -i hosts.yml playbook.yaml --limit <rpi_hostname>
    ```
 
-   A reboot will probably be required when complete.
+   where `<rpi_hostname>` it the hostname of the Raspberry Pi where the services will be installed. The hostname must be listed in the `hosts.yml` file. A different `hosts.yml` file can be used if needed.
 
-4. Synchronize the venv with the pinned drivers:
+   It will probably be necessary to reboot the Raspberry Pi when complete.
 
-   ```console
-   ./update-venv
-   ```
+## Using the Services
 
-   If `requirements.in` has been modified or to update the versions of the python dependencies, run `update-venv` with the `build` option. This will
-   first update `requirements.txt` with the new module requirements.
+There are two services that are created:
 
-## Setup Services
+- temperature-logger
 
-### Display IP
+  Measures temperature from a P100 RTD over the SPI interface and displays it on an LCD display
 
-To setup the _Display IP_ service, run:
+- display-ip-addr
 
-```console
-ansible-playbook install-display-ip.yaml --limit <IP of RPi>, -K
-```
+  Displays the Raspberry Pi's IP address on the LCD display
 
-### Temperature Logger
+They are not `enabled` so they do not start when the Raspberry Pi boots up.
 
-To setup the _Temperature Logger_ service, run:
-
-```console
-ansible-playbook install-temp-logger.yaml --limit <IP of RPi>, -K
-```
-
-### Notes
-
-1. There must be a comma after the IP address of the Raspberry Pi so that Ansible does not interpret the IP address as a hostname.
+See the man page for `systemctl` for information on how to start/stop services.
