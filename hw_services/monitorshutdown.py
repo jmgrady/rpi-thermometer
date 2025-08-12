@@ -17,7 +17,7 @@ from rgbled import RgbLed
 
 def main() -> None:
     # setup to poweroff switch
-    power_gpio_pin = digitalio.DigitalInOut(board.D16)
+    power_gpio_pin = digitalio.DigitalInOut(board.D3)
     power_gpio_pin.direction = digitalio.Direction.INPUT
     power_gpio_pin.pull = digitalio.Pull.UP
     power_switch = Debouncer(power_gpio_pin)
