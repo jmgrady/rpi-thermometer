@@ -17,7 +17,7 @@ pep8-naming
 
 # Formatting.
 black
-isort
+isort<6,>=4.2.5
 
 # Circuit Pi
 adafruit-blinka
