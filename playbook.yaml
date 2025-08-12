@@ -82,6 +82,17 @@
             script: "{{ rpi_services_dir }}/templogger.py --period {{ temp_meas_period }}",
           }
 
+    - name: "Setup GPIO Shutdown overlay"
+      blockinfile:
+        block: |
+          [all]
+          # Enable GPIO shutdown
+          dtoverlay=gpio-shutdown,active_low,gpiopin={{ gpio_shutdown.pin }}
+        append_newline: yes
+        insertafter: EOF
+        path: /boot/firmware/config.txt
+      when: gpio_shutdown.enabled
+
     - name: "Setup Python virtual environment"
       import_role:
         name: python_venv
