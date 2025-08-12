@@ -1,2 +1,6 @@
 ---
 install_dir: /opt/rpi
+
+gpio_shutdown:
+  enabled: yes
+  pin: 3
