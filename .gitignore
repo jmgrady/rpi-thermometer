@@ -13,7 +13,6 @@
 __pycache__
 *.pyc
 venv
-raspi-blinka.py
 
 # temperature log files
 data/
