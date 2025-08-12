@@ -16,7 +16,7 @@ venv
 raspi-blinka.py
 
 # temperature log files
-data/*
+data/
 
 # YAML files for ad hoc testing/development
 *.hosts.yml

@@ -24,12 +24,12 @@ The services need to run in a virtual environment on the Raspberry Pi.
 3. Create the virtual environment and install CircuitPython:
 
    ```console
-   cd hw-services
+   cd rpi-setup
    ./new-venv
    ```
    A reboot will probably be required when complete.
 
-4. Synchronized the venv with the pinned drivers:
+4. Synchronize the venv with the pinned drivers:
 
    ```console
    ./update-venv
