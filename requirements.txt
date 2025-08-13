@@ -143,6 +143,14 @@ pyserial==3.5
     # via
     #   binho-host-adapter
     #   pyftdi
+pyside6==6.8.0.2
+    # via -r requirements.in
+pyside6-addons==6.8.0.2
+    # via pyside6
+pyside6-essentials==6.8.0.2
+    # via
+    #   pyside6
+    #   pyside6-addons
 pyusb==1.3.1
     # via pyftdi
 pyyaml==6.0.2
@@ -151,6 +159,11 @@ resolvelib==1.0.1
     # via ansible-core
 rpi-gpio==0.7.1
     # via -r requirements.in
+shiboken6==6.8.0.2
+    # via
+    #   pyside6
+    #   pyside6-addons
+    #   pyside6-essentials
 sysv-ipc==1.1.0
     # via adafruit-blinka
 tox==4.28.4
@@ -173,5 +186,7 @@ typing-extensions==4.14.1
     #   mypy
 urllib3==2.5.0
     # via types-requests
-virtualenv==20.33.1
+virtualenv==20.34.0
     # via tox
+websockets==15.0.1
+    # via -r requirements.in

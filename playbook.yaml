@@ -74,12 +74,12 @@
         - {
             name: temperature-logger,
             description: Log temperature measurements to a local file,
-            script: "{{ rpi_services_dir }}/monitorshutdown.py",
+            script: "{{ rpi_services_dir }}/templogger.py --period {{ temp_meas_period }}",
           }
         - {
             name: monitor-shutdown,
             description: Monitor pushbutton to initiate a graceful power-off,
-            script: "{{ rpi_services_dir }}/templogger.py --period {{ temp_meas_period }}",
+            script: "{{ rpi_services_dir }}/monitorshutdown.py",
           }
 
     - name: "Setup GPIO Shutdown overlay"
