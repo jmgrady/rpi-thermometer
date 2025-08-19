@@ -1,11 +1,9 @@
 ---
 ##############################################################
-# Playbook: playbook.yml
+# Playbook: install.yaml
 #
-# Sets up services to run on a Raspberry Pi:
-#  - Monitor a pushbutton to initiate a poweroff sequence
-#  - Display the WiFi IP address on a 16x2 display
-#  - Log/display temperature readings
+# Sets up Python application to display and log a Temperature
+# Measurement on a Raspberry Pi
 #
 ##############################################################
 
