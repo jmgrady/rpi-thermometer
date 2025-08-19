@@ -1,0 +1,45 @@
+---
+##############################################################
+# Playbook: uninstall.yaml
+#
+# Uninstalls files installed by install.yaml
+# EXCEPT for the monitor-shutdown service
+#
+##############################################################
+
+- name: Uninstall Temperature Logger
+  hosts: all
+  gather_facts: true
+  become: true
+
+  vars_files:
+    - vars/config_common.yml
+  vars:
+    stop_services:
+      - temperature-logger.service
+      - display-ip-addr.service
+
+  tasks:
+    - name: Populate service facts
+      service_facts:
+
+    - name: Stop & Disable any installed services
+      service:
+        name: "{{ item }}"
+        state: "stopped"
+        enabled: false
+      when: "item in service_names"
+      loop: "{{ stop_services }}"
+      vars:
+        service_names: "{{ services|dict2items|map(attribute='value.name')|list }}"
+
+    - name: Delete installed files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/lib/systemd/system/temperature-logger.service
+        - /usr/lib/systemd/system/display-ip-addr.service
+        - "{{ install_dir }}"
+        - /usr/share/applications/Temperature.desktop
+        - /usr/share/icons/thermometer.svg

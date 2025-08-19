@@ -19,13 +19,7 @@ pep8-naming
 black
 isort<6,>=4.2.5
 
-# Circuit Pi
-adafruit-blinka
-adafruit-circuitpython-debouncer
-adafruit-circuitpython-max31865
-adafruit-python-shell
 ansible
-RPi.GPIO
 
 # Qt UI Framework
 websockets>=12.0

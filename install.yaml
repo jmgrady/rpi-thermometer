@@ -1,0 +1,146 @@
+---
+##############################################################
+# Playbook: install.yaml
+#
+# Sets up Python application to display and log a Temperature
+# Measurement on a Raspberry Pi
+#
+##############################################################
+
+- name: Setup Raspberry Pi services
+  hosts: all
+  gather_facts: true
+  become: true
+
+  vars_files:
+    - vars/config_common.yml
+  vars:
+    python_env_wrapper: python-wrapper
+    virtual_env: venv
+    temp_meas_period: 15.0
+    temp_data_dir: "{{ install_dir }}/data"
+
+  tasks:
+    - name: "Create required installation directories"
+      file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "{{ install_dir }}"
+          mode: "0755"
+        - path: "{{ install_dir }}/ui"
+          mode: "0755"
+        - path: "{{ install_dir }}/data"
+          mode: "0777"
+
+    - name: "Install Python Scripts"
+      copy:
+        src: "{{ item }}"
+        dest: "{{ install_dir }}/{{ item | basename }}"
+        owner: root
+        group: root
+        mode: 0755
+      with_fileglob:
+        - "app/*"
+
+    - name: "Install UI Python Scripts"
+      copy:
+        src: "{{ item }}"
+        dest: "{{ install_dir }}/ui/{{ item | basename }}"
+        owner: root
+        group: root
+        mode: 0755
+      with_fileglob:
+        - "app/ui/*.py"
+
+    - name: "Install application icons"
+      copy:
+        src: app/ui/icons/thermometer-svgrepo-com.svg
+        dest: /usr/share/icons/thermometer.svg
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: "Install rpi service wrapper"
+      template:
+        src: python_env_wrapper.sh
+        dest: /usr/local/bin/{{ python_env_wrapper }}
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: "Create monitor shutdown service file"
+      template:
+        src: rpi_monitor.service.j2
+        dest: /usr/lib/systemd/system/{{ item.name }}.service
+        owner: root
+        group: root
+        mode: 0755
+      loop:
+        - {
+            name: monitor-shutdown,
+            description: Monitor pushbutton to initiate a graceful power-off,
+            script: "{{ install_dir }}/monitorshutdown.py",
+          }
+
+    - name: "Create optional service files"
+      template:
+        src: rpi_monitor.service.j2
+        dest: /usr/lib/systemd/system/{{ item.name }}.service
+        owner: root
+        group: root
+        mode: 0755
+      loop:
+        - {
+            name: display-ip-addr,
+            description: Display IP address,
+            script: "{{ install_dir }}/monitorip.py",
+          }
+        - {
+            name: temperature-logger,
+            description: Log temperature measurements to a local file,
+            script: "{{ install_dir }}/templogger.py --period {{ temp_meas_period }}",
+          }
+      when: run_as_service
+
+    - name: "Create desktop file - GUI"
+      template:
+        src: rpi_desktop.j2
+        dest: /usr/share/applications/Temperature-GUI.desktop
+        owner: root
+        group: root
+        mode: 0755
+      vars:
+        desktop_term_enabled: false
+        desktop_exec: ui/test_ui.py
+        desktop_name: "Temperature - GUI"
+
+    - name: "Create desktop file"
+      template:
+        src: rpi_desktop.j2
+        dest: /usr/share/applications/Temperature.desktop
+        owner: root
+        group: root
+        mode: 0755
+      vars:
+        desktop_term_enabled: true
+        desktop_exec: templogger.py
+        desktop_name: "Temperature"
+
+    - name: "Setup GPIO Shutdown overlay"
+      blockinfile:
+        block: |
+          [all]
+          # Enable GPIO shutdown
+          dtoverlay=gpio-shutdown,active_low,gpiopin={{ gpio_shutdown.pin }}
+        append_newline: yes
+        insertafter: EOF
+        path: /boot/firmware/config.txt
+      when: gpio_shutdown.enabled
+
+    - name: "Setup Python virtual environment"
+      import_role:
+        name: python_venv

@@ -27,6 +27,7 @@ The services need to run in a virtual environment on the Raspberry Pi.
    cd rpi-setup
    ./new-venv
    ```
+
    A reboot will probably be required when complete.
 
 4. Synchronize the venv with the pinned drivers:
@@ -36,26 +37,17 @@ The services need to run in a virtual environment on the Raspberry Pi.
    ```
 
    If `requirements.in` has been modified or to update the versions of the python dependencies, run `update-venv` with the `build` option. This will
-    first update `requirements.txt` with the new module requirements.
+   first update `requirements.txt` with the new module requirements.
 
-## Setup Services
+## Installation
 
-### Display IP
-
-To setup the _Display IP_ service, run:
+To install the temperature logger and supporting software, run:
 
 ```console
-ansible-playbook install-display-ip.yaml --limit <IP of RPi>, -K
-```
-
-### Temperature Logger
-
-To setup the _Temperature Logger_ service, run:
-
-```console
-ansible-playbook install-temp-logger.yaml --limit <IP of RPi>, -K
+ansible-playbook install.yaml --limit <IP of RPi>,
 ```
 
 ### Notes
 
-1. There must be a comma after the IP address of the Raspberry Pi so that Ansible does not interpret the IP address as a hostname.
+1. There must be a comma after the IP address of the Raspberry Pi so that Ansible does not interpret the IP address as a hostname. Alternately, edit `hosts.yml` to include the hostname of the target.
+2. If your Raspberry Pi requires a password for `sudo`, add the `-K` option to the command above.
