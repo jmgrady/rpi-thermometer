@@ -1,0 +1,12 @@
+[Desktop Entry]
+Comment=
+Terminal=false
+Name=Temperture
+{% if test_ui %}
+Exec={{ python_env_wrapper }} {{ install_dir }}/{{ test_exec }}
+{% else %}
+Exec={{ python_env_wrapper }} {{ install_dir }}/{{ temp_exec }}
+{% endif %}
+Type=Application
+Icon=thermometer
+Categories=Other

@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=exec
-ExecStart={{ rpi_service_wrapper }} {{ item.script }}
+ExecStart={{ python_env_wrapper }} {{ item.script }}
 KillSignal=SIGINT
 Restart=on-failure
 RestartSec=5

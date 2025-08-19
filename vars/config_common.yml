@@ -1,5 +1,8 @@
 ---
 install_dir: /opt/rpi
+icon_file: thermometer-svgrepo-com.svg
+
+run_as_service: no
 
 gpio_shutdown:
   enabled: yes

@@ -4,3 +4,7 @@ adafruit-circuitpython-debouncer
 adafruit-circuitpython-max31865
 adafruit-python-shell
 RPi.GPIO
+
+# Qt UI Framework
+websockets>=12.0
+PySide6
