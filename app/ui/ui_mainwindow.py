@@ -18,7 +18,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QLabel,
     QLineEdit, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QWidget)
+    QSizePolicy, QStatusBar, QToolButton, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -38,7 +38,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setAutoFillBackground(True)
         self.gridLayoutWidget = QWidget(self.centralwidget)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(60, 30, 531, 133))
+        self.gridLayoutWidget.setGeometry(QRect(50, 20, 391, 133))
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -54,7 +54,7 @@ class Ui_MainWindow(object):
         self.timeLabel = QLabel(self.gridLayoutWidget)
         self.timeLabel.setObjectName(u"timeLabel")
         font2 = QFont()
-        font2.setPointSize(24)
+        font2.setPointSize(18)
         self.timeLabel.setFont(font2)
 
         self.gridLayout.addWidget(self.timeLabel, 1, 0, 1, 1)
@@ -68,7 +68,9 @@ class Ui_MainWindow(object):
 
         self.elapsedTimeValue = QLabel(self.gridLayoutWidget)
         self.elapsedTimeValue.setObjectName(u"elapsedTimeValue")
-        self.elapsedTimeValue.setFont(font2)
+        font3 = QFont()
+        font3.setPointSize(24)
+        self.elapsedTimeValue.setFont(font3)
         self.elapsedTimeValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.elapsedTimeValue, 1, 1, 1, 1)
@@ -78,14 +80,15 @@ class Ui_MainWindow(object):
         self.loggingEnabled.setGeometry(QRect(70, 190, 141, 23))
         self.lineEdit = QLineEdit(self.centralwidget)
         self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setGeometry(QRect(90, 230, 431, 26))
+        self.lineEdit.setGeometry(QRect(190, 190, 431, 26))
+        self.toolButton = QToolButton(self.centralwidget)
+        self.toolButton.setObjectName(u"toolButton")
+        self.toolButton.setGeometry(QRect(620, 190, 26, 25))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 800, 34))
-        font3 = QFont()
-        font3.setPointSize(18)
-        self.menubar.setFont(font3)
+        self.menubar.setFont(font2)
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         MainWindow.setMenuBar(self.menubar)
@@ -111,6 +114,7 @@ class Ui_MainWindow(object):
         self.tempLabel.setText(QCoreApplication.translate("MainWindow", u"Temperature:", None))
         self.elapsedTimeValue.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
         self.loggingEnabled.setText(QCoreApplication.translate("MainWindow", u"Log to file", None))
+        self.toolButton.setText(QCoreApplication.translate("MainWindow", u"...", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi
 
