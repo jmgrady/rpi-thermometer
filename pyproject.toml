@@ -1,5 +1,5 @@
 [project]
-name = "hw_services"
+name = "app"
 version = "0.1.0"
 description = "Collection of services to run on Raspberry Pi"
 
@@ -14,7 +14,7 @@ exclude = "(venv|raspi-blinka.py)"
 
 [tool.black]
 line-length = 99
-target-version = ["py311"]
+target-version = ["py312"]
 
 [tool.isort]
 profile = "black"
