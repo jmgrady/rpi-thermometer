@@ -9,16 +9,16 @@
 
 - name: Install Python requirements file
   copy:
-    src: "{{ item.name }}"
-    dest: "{{ install_dir }}/{{ item.name }}"
-    mode: "{{ item.mode }}"
-  loop:
-    - name: requirements.in
-      mode: 664
-    - name: create_venv.sh
-      mode: 775
+    src: requirements.in
+    dest: "{{ install_dir }}/requirements.in"
+    mode: 0644
 
 - name: Create the virtual environment
-  shell:
-    cmd: "{{ install_dir }}/create_venv.sh"
+  shell: |
+    python3 -m venv venv  --system-site-packages
+    . venv/bin/activate
+    python -m pip install --upgrade pip pip-tools
+    python -m piptools compile --upgrade requirements.in
+    python -m piptools sync requirements.txt
+  args:
     chdir: "{{ install_dir }}"

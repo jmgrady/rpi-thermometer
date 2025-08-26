@@ -21,7 +21,21 @@
     temp_data_dir: "{{ install_dir }}/data"
 
   tasks:
-    - name: "Create required installation directories"
+    - name: Upgrade existing packages
+      apt:
+        upgrade: "yes"
+        update_cache: yes
+
+    - name: Update UI Python Code from Qt Designer file
+      shell: |
+        pwd
+        . venv/bin/activate
+        cd app/ui
+        pyside6-uic form.ui -o ui_mainwindow.py
+      delegate_to: localhost
+      become: no
+
+    - name: Create required installation directories
       file:
         path: "{{ item.path }}"
         state: directory
@@ -36,7 +50,7 @@
         - path: "{{ install_dir }}/data"
           mode: "0777"
 
-    - name: "Install Python Scripts"
+    - name: Install Python Scripts
       copy:
         src: "{{ item }}"
         dest: "{{ install_dir }}/{{ item | basename }}"
@@ -46,7 +60,7 @@
       with_fileglob:
         - "app/*"
 
-    - name: "Install UI Python Scripts"
+    - name: Install UI Python Scripts
       copy:
         src: "{{ item }}"
         dest: "{{ install_dir }}/ui/{{ item | basename }}"
@@ -56,7 +70,7 @@
       with_fileglob:
         - "app/ui/*.py"
 
-    - name: "Install application icons"
+    - name: Install application icons
       copy:
         src: app/ui/icons/thermometer-svgrepo-com.svg
         dest: /usr/share/icons/thermometer.svg
@@ -64,7 +78,7 @@
         group: root
         mode: 0755
 
-    - name: "Install rpi service wrapper"
+    - name: Install rpi service wrapper
       template:
         src: python_env_wrapper.sh
         dest: /usr/local/bin/{{ python_env_wrapper }}
@@ -72,7 +86,7 @@
         owner: root
         group: root
 
-    - name: "Create monitor shutdown service file"
+    - name: Create monitor shutdown service file
       template:
         src: rpi_monitor.service.j2
         dest: /usr/lib/systemd/system/{{ item.name }}.service
@@ -86,7 +100,7 @@
             script: "{{ install_dir }}/monitorshutdown.py",
           }
 
-    - name: "Create optional service files"
+    - name: Create optional service files
       template:
         src: rpi_monitor.service.j2
         dest: /usr/lib/systemd/system/{{ item.name }}.service
@@ -106,7 +120,7 @@
           }
       when: run_as_service
 
-    - name: "Create desktop file - GUI"
+    - name: Create desktop file - GUI
       template:
         src: rpi_desktop.j2
         dest: /usr/share/applications/Temperature-GUI.desktop
@@ -118,7 +132,7 @@
         desktop_exec: ui/test_ui.py
         desktop_name: "Temperature - GUI"
 
-    - name: "Create desktop file"
+    - name: Create desktop file
       template:
         src: rpi_desktop.j2
         dest: /usr/share/applications/Temperature.desktop
@@ -130,7 +144,7 @@
         desktop_exec: templogger.py
         desktop_name: "Temperature"
 
-    - name: "Setup GPIO Shutdown overlay"
+    - name: Setup GPIO Shutdown overlay
       blockinfile:
         block: |
           [all]
@@ -141,6 +155,6 @@
         path: /boot/firmware/config.txt
       when: gpio_shutdown.enabled
 
-    - name: "Setup Python virtual environment"
+    - name: Setup Python virtual environment
       import_role:
         name: python_venv
