@@ -21,6 +21,8 @@ isort<6,>=4.2.5
 
 ansible
 
+serial
+
 # Qt UI Framework
 websockets>=12.0
 PySide6

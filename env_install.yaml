@@ -1,0 +1,61 @@
+---
+##############################################################
+# Playbook: install.yaml
+#
+# Sets up Python application to display and log a Temperature
+# Measurement on a Raspberry Pi
+#
+##############################################################
+
+- name: Setup Raspberry Pi services
+  hosts: all
+  gather_facts: true
+  become: true
+
+  vars_files:
+    - vars/config_common.yml
+  vars:
+    python_env_wrapper: python-wrapper
+    virtual_env: venv
+    temp_meas_period: 15.0
+    temp_data_dir: "{{ install_dir }}/data"
+
+  tasks:
+    - name: Upgrade existing packages
+      apt:
+        upgrade: "yes"
+        update_cache: yes
+
+    - name: Create required installation directories
+      file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "{{ item.mode }}"
+      loop:
+        - path: "{{ install_dir }}"
+          mode: "0755"
+        - path: "{{ install_dir }}/ui"
+          mode: "0755"
+        - path: "{{ install_dir }}/data"
+          mode: "0777"
+        - path: "{{ install_dir }}/sensors"
+          mode: "0777"
+        - path: "{{ install_dir }}/services"
+          mode: "0777"
+
+    - name: Setup GPIO Shutdown overlay
+      blockinfile:
+        block: |
+          [all]
+          # Enable GPIO shutdown
+          dtoverlay=gpio-shutdown,active_low,gpiopin={{ gpio_shutdown.pin }}
+        append_newline: yes
+        insertafter: EOF
+        path: /boot/firmware/config.txt
+      when: gpio_shutdown.enabled
+
+    - name: Setup Python virtual environment
+      import_role:
+        name: python_venv

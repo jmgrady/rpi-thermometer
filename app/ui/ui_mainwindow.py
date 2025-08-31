@@ -3,25 +3,59 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.1
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-    QCursor, QFont, QFontDatabase, QGradient,
-    QIcon, QImage, QKeySequence, QLinearGradient,
-    QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QLabel,
-    QLineEdit, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QToolButton, QWidget)
+from PySide6.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QLocale,
+    QMetaObject,
+    QObject,
+    QPoint,
+    QRect,
+    QSize,
+    Qt,
+    QTime,
+    QUrl,
+)
+from PySide6.QtGui import (
+    QAction,
+    QBrush,
+    QColor,
+    QConicalGradient,
+    QCursor,
+    QFont,
+    QFontDatabase,
+    QGradient,
+    QIcon,
+    QImage,
+    QKeySequence,
+    QLinearGradient,
+    QPainter,
+    QPalette,
+    QPixmap,
+    QRadialGradient,
+    QTransform,
+)
+from PySide6.QtWidgets import (
+    QApplication,
+    QGridLayout,
+    QLabel,
+    QMainWindow,
+    QMenu,
+    QMenuBar,
+    QSizePolicy,
+    QStatusBar,
+    QWidget,
+)
+
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow: QMainWindow) -> None:
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 480)
@@ -38,59 +72,49 @@ class Ui_MainWindow(object):
         self.centralwidget.setAutoFillBackground(True)
         self.gridLayoutWidget = QWidget(self.centralwidget)
         self.gridLayoutWidget.setObjectName(u"gridLayoutWidget")
-        self.gridLayoutWidget.setGeometry(QRect(50, 20, 391, 133))
+        self.gridLayoutWidget.setGeometry(QRect(50, 20, 391, 144))
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.tempValue = QLabel(self.gridLayoutWidget)
-        self.tempValue.setObjectName(u"tempValue")
-        font1 = QFont()
-        font1.setPointSize(36)
-        self.tempValue.setFont(font1)
-        self.tempValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.gridLayout.addWidget(self.tempValue, 0, 1, 1, 1)
-
-        self.timeLabel = QLabel(self.gridLayoutWidget)
-        self.timeLabel.setObjectName(u"timeLabel")
-        font2 = QFont()
-        font2.setPointSize(18)
-        self.timeLabel.setFont(font2)
-
-        self.gridLayout.addWidget(self.timeLabel, 1, 0, 1, 1)
-
         self.tempLabel = QLabel(self.gridLayoutWidget)
         self.tempLabel.setObjectName(u"tempLabel")
         self.tempLabel.setMinimumSize(QSize(0, 78))
-        self.tempLabel.setFont(font2)
+        font1 = QFont()
+        font1.setPointSize(18)
+        self.tempLabel.setFont(font1)
 
-        self.gridLayout.addWidget(self.tempLabel, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.tempLabel, 1, 0, 1, 1)
+
+        self.tempValue = QLabel(self.gridLayoutWidget)
+        self.tempValue.setObjectName(u"tempValue")
+        font2 = QFont()
+        font2.setPointSize(36)
+        self.tempValue.setFont(font2)
+        self.tempValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.gridLayout.addWidget(self.tempValue, 1, 1, 1, 1)
+
+        self.timeLabel = QLabel(self.gridLayoutWidget)
+        self.timeLabel.setObjectName(u"timeLabel")
+        self.timeLabel.setFont(font)
+
+        self.gridLayout.addWidget(self.timeLabel, 0, 0, 1, 1)
 
         self.elapsedTimeValue = QLabel(self.gridLayoutWidget)
         self.elapsedTimeValue.setObjectName(u"elapsedTimeValue")
-        font3 = QFont()
-        font3.setPointSize(24)
-        self.elapsedTimeValue.setFont(font3)
+        self.elapsedTimeValue.setFont(font1)
         self.elapsedTimeValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.gridLayout.addWidget(self.elapsedTimeValue, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.elapsedTimeValue, 0, 1, 1, 1)
 
-        self.loggingEnabled = QCheckBox(self.centralwidget)
-        self.loggingEnabled.setObjectName(u"loggingEnabled")
-        self.loggingEnabled.setGeometry(QRect(70, 190, 141, 23))
-        self.lineEdit = QLineEdit(self.centralwidget)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setGeometry(QRect(190, 190, 431, 26))
-        self.toolButton = QToolButton(self.centralwidget)
-        self.toolButton.setObjectName(u"toolButton")
-        self.toolButton.setGeometry(QRect(620, 190, 26, 25))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 800, 34))
-        self.menubar.setFont(font2)
+        self.menubar.setFont(font1)
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
+        self.menuFile.setFont(font1)
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -105,16 +129,14 @@ class Ui_MainWindow(object):
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, MainWindow: QMainWindow) -> None:
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.actionSettings.setText(QCoreApplication.translate("MainWindow", u"Settings...", None))
         self.actionQuit.setText(QCoreApplication.translate("MainWindow", u"Quit", None))
+        self.tempLabel.setText(QCoreApplication.translate("MainWindow", u"Temperature:", None))
         self.tempValue.setText(QCoreApplication.translate("MainWindow", u"-?-", None))
         self.timeLabel.setText(QCoreApplication.translate("MainWindow", u"Elapsed Time:", None))
-        self.tempLabel.setText(QCoreApplication.translate("MainWindow", u"Temperature:", None))
-        self.elapsedTimeValue.setText(QCoreApplication.translate("MainWindow", u"00:00:00", None))
-        self.loggingEnabled.setText(QCoreApplication.translate("MainWindow", u"Log to file", None))
-        self.toolButton.setText(QCoreApplication.translate("MainWindow", u"...", None))
+        self.elapsedTimeValue.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi
 
