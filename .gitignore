@@ -35,12 +35,13 @@ Thumbs.db
 *.rc
 /.qmake.cache
 /.qmake.stash
-**/.qtcreator
 
 # qtcreator generated files
+**/.qtcreator
 *.pro.user*
 *.qbs.user*
 CMakeLists.txt.user*
+ui_mainwindow.py
 
 # xemacs temporary files
 *.flc
@@ -90,6 +91,7 @@ __pycache__
 .rcc/
 .uic/
 /build*/
+Temperature Logger Hat/Temperature Logger Hat-backups/
 
 venv
 

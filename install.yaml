@@ -21,35 +21,6 @@
     temp_data_dir: "{{ install_dir }}/data"
 
   tasks:
-    - name: Upgrade existing packages
-      apt:
-        upgrade: "yes"
-        update_cache: yes
-
-    - name: Update UI Python Code from Qt Designer file
-      shell: |
-        pwd
-        . venv/bin/activate
-        cd app/ui
-        pyside6-uic form.ui -o ui_mainwindow.py
-      delegate_to: localhost
-      become: no
-
-    - name: Create required installation directories
-      file:
-        path: "{{ item.path }}"
-        state: directory
-        owner: root
-        group: root
-        mode: "{{ item.mode }}"
-      loop:
-        - path: "{{ install_dir }}"
-          mode: "0755"
-        - path: "{{ install_dir }}/ui"
-          mode: "0755"
-        - path: "{{ install_dir }}/data"
-          mode: "0777"
-
     - name: Install Python Scripts
       copy:
         src: "{{ item }}"
@@ -69,6 +40,26 @@
         mode: 0755
       with_fileglob:
         - "app/ui/*.py"
+
+    - name: Install Sensor Python Scripts
+      copy:
+        src: "{{ item }}"
+        dest: "{{ install_dir }}/sensors/{{ item | basename }}"
+        owner: root
+        group: root
+        mode: 0755
+      with_fileglob:
+        - "app/sensors/*.py"
+
+    - name: Install Services Python Scripts
+      copy:
+        src: "{{ item }}"
+        dest: "{{ install_dir }}/services/{{ item | basename }}"
+        owner: root
+        group: root
+        mode: 0755
+      with_fileglob:
+        - "app/services/*.py"
 
     - name: Install application icons
       copy:
@@ -97,7 +88,7 @@
         - {
             name: monitor-shutdown,
             description: Monitor pushbutton to initiate a graceful power-off,
-            script: "{{ install_dir }}/monitorshutdown.py",
+            script: "{{ install_dir }}/services/monitorshutdown.py",
           }
 
     - name: Create optional service files
@@ -111,50 +102,23 @@
         - {
             name: display-ip-addr,
             description: Display IP address,
-            script: "{{ install_dir }}/monitorip.py",
+            script: "{{ install_dir }}/services/monitorip.py",
           }
         - {
             name: temperature-logger,
             description: Log temperature measurements to a local file,
-            script: "{{ install_dir }}/templogger.py --period {{ temp_meas_period }}",
+            script: "{{ install_dir }}/main.py --ui tty --period {{ temp_meas_period }}",
           }
       when: run_as_service
 
     - name: Create desktop file - GUI
       template:
         src: rpi_desktop.j2
-        dest: /usr/share/applications/Temperature-GUI.desktop
+        dest: /usr/share/applications/Thermometer.desktop
         owner: root
         group: root
         mode: 0755
       vars:
         desktop_term_enabled: false
-        desktop_exec: ui/test_ui.py
-        desktop_name: "Temperature - GUI"
-
-    - name: Create desktop file
-      template:
-        src: rpi_desktop.j2
-        dest: /usr/share/applications/Temperature.desktop
-        owner: root
-        group: root
-        mode: 0755
-      vars:
-        desktop_term_enabled: true
-        desktop_exec: templogger.py
-        desktop_name: "Temperature"
-
-    - name: Setup GPIO Shutdown overlay
-      blockinfile:
-        block: |
-          [all]
-          # Enable GPIO shutdown
-          dtoverlay=gpio-shutdown,active_low,gpiopin={{ gpio_shutdown.pin }}
-        append_newline: yes
-        insertafter: EOF
-        path: /boot/firmware/config.txt
-      when: gpio_shutdown.enabled
-
-    - name: Setup Python virtual environment
-      import_role:
-        name: python_venv
+        desktop_exec: main.py
+        desktop_name: "Thermometer"
