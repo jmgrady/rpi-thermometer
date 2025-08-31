@@ -53,7 +53,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow: QMainWindow) -> None:
         if not MainWindow.objectName():
