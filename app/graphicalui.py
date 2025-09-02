@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import logging
 import math
-from typing import Optional
+from typing import List, Optional
 
 from PySide6.QtCore import QObject, Slot
 from baseui import BaseUi
@@ -17,6 +17,8 @@ class GraphicalUi(BaseUi):
         self.init_ui()
         self.window.show()
         self.units = "F"
+        self.meas_times: List[float] = []
+        self.meas_values: List[float] = []
 
     def init_ui(self) -> None:
         self.window.ui.actionQuit.triggered.connect(self.send_quit)
@@ -32,16 +34,23 @@ class GraphicalUi(BaseUi):
     def update_value(self, timestamp: str, value: float) -> None:
         elapsed_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f") - self.start_time
         logging.info(f"Elapsed time: {elapsed_time.total_seconds()}")
+
+        # round elapsed time to the nearest second
+        elapsed_time = timedelta(seconds=int(elapsed_time.total_seconds()))
+        self.window.ui.elapsedTimeValue.setText(f"{elapsed_time}")
+
+        # update the temperature value
         if math.isnan(value):
             self.window.ui.tempValue.setText("- ? -")
         else:
             if self.units == "F":
-                self.window.ui.tempValue.setText(f"{value * 9.0 / 5.0 + 32.0:.1f} °F")
+                scaled_value = value * 9.0 / 5.0 + 32.0
             else:
-                self.window.ui.tempValue.setText(f"{value:.1f} °C")
-        # round elapsed time to the nearest second
-        elapsed_time = timedelta(seconds=int(elapsed_time.total_seconds()))
-        self.window.ui.elapsedTimeValue.setText(f"{elapsed_time}")
+                scaled_value = value
+            self.window.ui.tempValue.setText(f"{scaled_value:.1f} °{self.units}")
+            self.meas_times.append(elapsed_time.total_seconds())
+            self.meas_values.append(scaled_value)
+            self.window.ui.graphWindow.plot(self.meas_times, self.meas_values)
 
     @Slot()
     def on_start_clicked(self) -> None:

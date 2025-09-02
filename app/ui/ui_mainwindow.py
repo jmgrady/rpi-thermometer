@@ -19,6 +19,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QFormLayout, QLabel, QMainWindow,
     QMenu, QMenuBar, QPushButton, QSizePolicy,
     QStatusBar, QWidget)
+
+from pyqtgraph import PlotWidget
 import ui.resources_rc
 
 class Ui_MainWindow(object):
@@ -44,7 +46,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setAutoFillBackground(True)
         self.formLayoutWidget = QWidget(self.centralwidget)
         self.formLayoutWidget.setObjectName(u"formLayoutWidget")
-        self.formLayoutWidget.setGeometry(QRect(40, 30, 501, 115))
+        self.formLayoutWidget.setGeometry(QRect(20, 10, 501, 115))
         self.formLayout = QFormLayout(self.formLayoutWidget)
         self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -81,7 +83,7 @@ class Ui_MainWindow(object):
 
         self.startButton = QPushButton(self.centralwidget)
         self.startButton.setObjectName(u"startButton")
-        self.startButton.setGeometry(QRect(630, 40, 128, 48))
+        self.startButton.setGeometry(QRect(570, 10, 128, 48))
         font3 = QFont()
         font3.setPointSize(20)
         self.startButton.setFont(font3)
@@ -91,12 +93,15 @@ class Ui_MainWindow(object):
         self.startButton.setIconSize(QSize(24, 24))
         self.stopButton = QPushButton(self.centralwidget)
         self.stopButton.setObjectName(u"stopButton")
-        self.stopButton.setGeometry(QRect(630, 90, 128, 48))
+        self.stopButton.setGeometry(QRect(570, 60, 128, 48))
         self.stopButton.setFont(font3)
         icon2 = QIcon()
         icon2.addFile(u":/resources/icons/media-stop.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.stopButton.setIcon(icon2)
         self.stopButton.setIconSize(QSize(24, 24))
+        self.graphWindow = PlotWidget(self.centralwidget)
+        self.graphWindow.setObjectName(u"graphWindow")
+        self.graphWindow.setGeometry(QRect(20, 150, 701, 271))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")

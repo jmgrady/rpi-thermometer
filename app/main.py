@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
         "--period",
         "-p",
         help="Period (in seconds) between temperature measurements.",
-        default=15.0,
+        default=5.0,
     )
     parser.add_argument(
         "--target", choices=["rpi", "host"], default="rpi", help="Specify runtime target"
