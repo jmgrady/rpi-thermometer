@@ -9,13 +9,13 @@ from PySide6.QtCore import QObject, Signal, Slot
 class BaseUi(QObject):
     def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
-        self.start_time = datetime.now()
-        self.temp_value = math.nan
+        self.reset()
 
     quit_request = Signal()
+    start_measurements = Signal()
+    stop_measurements = Signal()
 
-    @Slot()
-    def start(self) -> None:
+    def reset(self) -> None:
         self.start_time = datetime.now()
         self.temp_value = math.nan
         logging.info(f"Start time set to {self.start_time}")

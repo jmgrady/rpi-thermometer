@@ -12,17 +12,18 @@ class GraphicalUi(BaseUi):
 
     def __init__(self, parent: Optional[QObject] = None):
         super(GraphicalUi, self).__init__(parent)
+        self.reset()
         self.window = MainWindow()  # type: ignore[no-untyped-call]
-        self.window.ui.actionQuit.triggered.connect(self.send_quit)
+        self.init_ui()
         self.window.show()
-        self.start()
         self.units = "F"
 
-    @Slot()
-    def start(self) -> None:
-        super(GraphicalUi, self).start()
-        self.start_time = datetime.now()
+    def init_ui(self) -> None:
+        self.window.ui.actionQuit.triggered.connect(self.send_quit)
+        self.window.ui.startButton.clicked.connect(self.on_start_clicked)
+        self.window.ui.stopButton.clicked.connect(self.on_stop_clicked)
         self.window.ui.tempValue.setText("- ? -")
+        self.window.ui.elapsedTimeValue.setText(f"{timedelta(0)}")
 
     def send_quit(self) -> None:
         self.quit_request.emit()
@@ -41,3 +42,12 @@ class GraphicalUi(BaseUi):
         # round elapsed time to the nearest second
         elapsed_time = timedelta(seconds=int(elapsed_time.total_seconds()))
         self.window.ui.elapsedTimeValue.setText(f"{elapsed_time}")
+
+    @Slot()
+    def on_start_clicked(self) -> None:
+        self.reset()
+        self.start_measurements.emit()
+
+    @Slot()
+    def on_stop_clicked(self) -> None:
+        self.stop_measurements.emit()
