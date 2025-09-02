@@ -27,7 +27,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--target", choices=["rpi", "host"], default="rpi", help="Specify runtime target"
     )
-    parser.add_argument("--mode", "-m", choices=["quiet", "debug"], help="Select the logging mode")
+    parser.add_argument(
+        "--mode",
+        "-m",
+        choices=["quiet", "info", "debug"],
+        default="info",
+        help="Select the logging mode",
+    )
     return parser.parse_args()
 
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import math
 from typing import Optional
@@ -38,4 +38,6 @@ class GraphicalUi(BaseUi):
                 self.window.ui.tempValue.setText(f"{value * 9.0 / 5.0 + 32.0:.1f} °F")
             else:
                 self.window.ui.tempValue.setText(f"{value:.1f} °C")
-        self.window.ui.elapsedTimeValue.setText(f"{elapsed_time.total_seconds():.0f}")
+        # round elapsed time to the nearest second
+        elapsed_time = timedelta(seconds=int(elapsed_time.total_seconds()))
+        self.window.ui.elapsedTimeValue.setText(f"{elapsed_time}")

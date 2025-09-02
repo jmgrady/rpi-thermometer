@@ -63,11 +63,18 @@
 
     - name: Install application icons
       copy:
-        src: app/ui/icons/thermometer-svgrepo-com.svg
-        dest: /usr/share/icons/thermometer.svg
+        src: app/ui/icons/{{ item.src }}
+        dest: /usr/share/icons/{{ item.dest }}
         owner: root
         group: root
         mode: 0755
+      loop:
+        - src: thermometer-svgrepo-com.svg
+          dest: thermometer.svg
+        - src: media-play.svg
+          dest: media-play.svg
+        - src: media-stop.svg
+          dest: media-stop.svg
 
     - name: Install rpi service wrapper
       template:
