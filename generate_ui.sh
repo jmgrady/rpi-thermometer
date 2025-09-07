@@ -18,7 +18,12 @@ pyside6-uic $ui_file -o $py_file
 for rc_file in *.qrc; do
     rc_name=${rc_file%.qrc}
     pyside6-rcc $rc_file -o ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# type: ignore" ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# flake8: noqa" ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# fmt: off" ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# isort: skip_file" ${rc_name}_rc.py
     sed -i "s/^import ${rc_name}_rc/import ui.${rc_name}_rc/" $py_file
+    
 done
                
 # Add missing typing information
