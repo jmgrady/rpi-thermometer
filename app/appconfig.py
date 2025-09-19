@@ -31,11 +31,17 @@ class AppConfig(QSettings):
         super(AppConfig, self).__init__(scope, app_name)
 
     def sample_period(self) -> float:
-        period = self.value(ConfigItem.PERIOD.value, 15.0)
-        return period  # type: ignore[return-value]
+        period = str(self.value(ConfigItem.PERIOD.value, 15.0))
+        return float(period)
+
+    def sample_period_msec(self) -> int:
+        return int(self.sample_period() * 1000.0)
 
     def set_sample_period(self, period: float) -> None:
-        self.setValue(ConfigItem.PERIOD.value, period)
+        # Store sample period as a string because Python is NOT
+        # a strongly typed language (in spite of attempts to appear
+        # otherwise).
+        self.setValue(ConfigItem.PERIOD.value, f"{period:0.1f}")
 
     def units(self) -> Units:
         unit_str = self.value(ConfigItem.UNITS.value, Units.DEG_F.value)

@@ -100,7 +100,8 @@ class GraphicalUi(BaseUi):
         self.init_ui()
         self.window.ui.startButton.setDisabled(True)
         self.window.ui.stopButton.setDisabled(False)
-        self.start_measurements.emit()
+        # Start the timer for periodic measurements
+        self.start_measurements.emit(self.config.sample_period_msec())
 
     @Slot()
     def on_stop_clicked(self) -> None:

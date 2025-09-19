@@ -32,7 +32,7 @@ class SettingsDialog(QDialog):
             self.ui.save_directory.setText(file_dlg.selectedFiles()[0])
 
     def load_dlg_from_config(self) -> None:
-        self.ui.sample_period.setValue(float(self.config.sample_period()))
+        self.ui.sample_period.setValue(self.config.sample_period())
         units = self.config.units()
         if units == Units.DEG_C:
             self.ui.units_deg_c.setChecked(True)

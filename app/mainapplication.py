@@ -2,7 +2,7 @@ import argparse
 import sys
 from typing import Optional
 
-from PySide6.QtCore import QTimer, Slot
+from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtWidgets import QApplication
 from appconfig import AppConfig, Sensors
 from baseui import BaseUi
@@ -19,9 +19,6 @@ class MainApplication(QApplication):
         self.ui: Optional[BaseUi] = None
         self.sensor: Optional[BaseSensor] = None
         self.config = AppConfig("PiProjects", "RPi Thermometer")
-
-        sample_period_sec = float(self.config.sample_period())
-        self.sample_period_msec = int(sample_period_sec * 1000.0)
 
         # Instantiate the selected UI mode
         if args.ui == "gui":
@@ -49,10 +46,16 @@ class MainApplication(QApplication):
         if self.sensor is not None and self.ui is not None:
             self.timer.timeout.connect(self.sensor.start_measurement)
             self.sensor.meas_complete.connect(self.ui.update_value)
+            self.first_measurement.connect(self.sensor.start_measurement)
+
+    first_measurement = Signal()
 
     @Slot()
-    def start_timer(self) -> None:
-        self.timer.start(self.sample_period_msec)
+    def start_timer(self, period: int) -> None:
+        # start the first measurement
+        self.first_measurement.emit()
+        # start timer for subsequent measurements
+        self.timer.start(period)
 
     @Slot()
     def stop_timer(self) -> None:

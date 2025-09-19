@@ -12,7 +12,7 @@ class BaseUi(QObject):
         self.reset()
 
     quit_request = Signal()
-    start_measurements = Signal()
+    start_measurements = Signal(int)
     stop_measurements = Signal()
 
     def reset(self) -> None:
