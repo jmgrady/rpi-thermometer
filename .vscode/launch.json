@@ -17,12 +17,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/app/main.py",
       "cwd": "${workspaceFolder}/app",
-      "args": [
-        "--target",
-        "host",
-        "--period",
-        "2"
-      ]
+      "console": "integratedTerminal"
     }
   ]
 }

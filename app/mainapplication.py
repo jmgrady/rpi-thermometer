@@ -4,6 +4,7 @@ from typing import Optional
 
 from PySide6.QtCore import QTimer, Slot
 from PySide6.QtWidgets import QApplication
+from appconfig import AppConfig, Sensors
 from baseui import BaseUi
 from graphicalui import GraphicalUi
 from sensors.basesensor import BaseSensor
@@ -17,12 +18,14 @@ class MainApplication(QApplication):
         # Create application components
         self.ui: Optional[BaseUi] = None
         self.sensor: Optional[BaseSensor] = None
+        self.config = AppConfig("PiProjects", "RPi Thermometer")
 
-        self.sample_period = int(float(args.period) * 1000.0)
+        sample_period_sec = float(self.config.sample_period())
+        self.sample_period_msec = int(sample_period_sec * 1000.0)
 
         # Instantiate the selected UI mode
         if args.ui == "gui":
-            self.ui = GraphicalUi(self)
+            self.ui = GraphicalUi(self.config, self)
             self.ui.quit_request.connect(self.quit)
             self.ui.start_measurements.connect(self.start_timer)
             self.ui.stop_measurements.connect(self.stop_timer)
@@ -30,12 +33,13 @@ class MainApplication(QApplication):
             self.ui = BaseUi(self)
 
         # Instantiate the selected sensors
-        if args.target == "rpi":
+        sensor_type = self.config.sensor_type()
+        if sensor_type == Sensors.SPI:
 
             from sensors.spitempsensor import SpiTempSensor
 
             self.sensor = SpiTempSensor(self)
-        else:
+        elif sensor_type == Sensors.SIM:
             self.sensor = MockSensor(self)
 
         # Create the timer to trigger measurements
@@ -48,7 +52,7 @@ class MainApplication(QApplication):
 
     @Slot()
     def start_timer(self) -> None:
-        self.timer.start(self.sample_period)
+        self.timer.start(self.sample_period_msec)
 
     @Slot()
     def stop_timer(self) -> None:
