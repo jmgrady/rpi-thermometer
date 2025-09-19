@@ -14,9 +14,20 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
+        "--mode",
+        "-m",
+        choices=["quiet", "info", "debug"],
+        default="info",
+        help="Select the logging mode",
+    )
+    parser.add_argument(
         "--period",
+        "-p",
         help="Period (in seconds) between temperature measurements.",
-        default=15.0,
+        default=5.0,
+    )
+    parser.add_argument(
+        "--target", choices=["rpi", "host"], default="rpi", help="Specify runtime target"
     )
     parser.add_argument(
         "--ui",
@@ -24,10 +35,6 @@ def parse_args() -> argparse.Namespace:
         default="gui",
         help="Specify mode for displaying the measured temperature.",
     )
-    parser.add_argument(
-        "--target", choices=["rpi", "host"], default="rpi", help="Specify runtime target"
-    )
-    parser.add_argument("--mode", "-m", choices=["quiet", "debug"], help="Select the logging mode")
     return parser.parse_args()
 
 
@@ -45,6 +52,5 @@ if __name__ == "__main__":
     args = parse_args()
     init_log_level(args)
     app = MainApplication(args)
-    app.start()
 
     sys.exit(app.exec())

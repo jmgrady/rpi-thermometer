@@ -11,11 +11,26 @@ cd ${SCRIPT_DIR}
 
 # Generate the Python UI code
 cd app/ui
-ui_file=form.ui
 py_file=ui_mainwindow.py
-pyside6-uic $ui_file -o $py_file
+dlg_file=ui_settingsdialog.py
+pyside6-uic mainwindow.ui -o $py_file
+pyside6-uic settings_dialog.ui -o $dlg_file
 
+
+for rc_file in *.qrc; do
+    rc_name=${rc_file%.qrc}
+    pyside6-rcc $rc_file -o ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# type: ignore" ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# flake8: noqa" ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# fmt: off" ${rc_name}_rc.py
+    sed -i "/^# WARNING!/a \# isort: skip_file" ${rc_name}_rc.py
+    for src_file in $py_file $dlg_file ; do
+        sed -i "s/^import ${rc_name}_rc/import ui.${rc_name}_rc/" $src_file
+    done
+done
+               
 # Add missing typing information
 # Currently the only missing annotations are function arguments that are QMainWindow
 # and a missing return type (None).
 sed -i "s/MainWindow):/MainWindow: QMainWindow) -> None:/" $py_file
+sed -i "s/SettingsDialog):/SettingsDialog: QDialog) -> None:/" $dlg_file

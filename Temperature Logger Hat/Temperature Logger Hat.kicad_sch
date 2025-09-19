@@ -4304,6 +4304,16 @@
 		)
 		(uuid "36e2c557-2c2a-4fba-9b6f-1167ab8ec281")
 	)
+	(text "SDO"
+		(exclude_from_sim no)
+		(at 65.786 100.838 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "423fc6d2-c9c4-4b5e-a472-ff611b5b577e")
+	)
 	(text "ID_SD and ID_SC PINS:\nThese pins are reserved for HAT ID EEPROM.\n\nAt boot time this I2C interface will be\ninterrogated to look for an EEPROM\nthat identifes the attached board and\nallows automagic setup of the GPIOs\n(and optionally, Linux drivers).\n\nBridging JP1 enables write protection.\n\nDO NOT USE these pins for anything other\nthan attaching an I2C ID EEPROM. Leave\nunconnected if ID EEPROM not required."
 		(exclude_from_sim no)
 		(at 16.51 193.04 0)
@@ -4314,6 +4324,36 @@
 			(justify left bottom)
 		)
 		(uuid "8714082a-55fe-4a29-9d48-99ae1ef73073")
+	)
+	(text "SDI\n"
+		(exclude_from_sim no)
+		(at 65.532 98.298 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "90e2ad6c-a765-431c-92f2-ce949b25ab6a")
+	)
+	(text "SCK"
+		(exclude_from_sim no)
+		(at 65.532 103.378 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "aed0c176-fa34-445b-8e82-dd7ccaef1b01")
+	)
+	(text "CS"
+		(exclude_from_sim no)
+		(at 65.278 95.504 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "cedb11d5-67fe-4ff3-9ff2-f75092033071")
 	)
 	(junction
 		(at 165.1 41.91)
@@ -4416,12 +4456,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9c6d23d2-dced-45ea-b218-4d006397f209")
-	)
-	(junction
-		(at 67.31 101.6)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a6043303-8d67-4ce1-8e50-96da0f84fc92")
 	)
 	(junction
 		(at 165.1 96.52)
@@ -5137,16 +5171,6 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 101.6) (xy 67.31 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "792969e8-623e-4070-af0e-5ac5d36a9e44")
-	)
-	(wire
-		(pts
 			(xy 165.1 76.2) (xy 165.1 83.82)
 		)
 		(stroke
@@ -5437,6 +5461,16 @@
 	)
 	(wire
 		(pts
+			(xy 55.88 101.6) (xy 68.58 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b56d0454-1c95-4127-b6b1-5c8f1008e1a6")
+	)
+	(wire
+		(pts
 			(xy 162.56 99.06) (xy 189.23 99.06)
 		)
 		(stroke
@@ -5614,16 +5648,6 @@
 			(type default)
 		)
 		(uuid "d87a9fe3-3f3f-46dc-b284-ec7e4cee506e")
-	)
-	(wire
-		(pts
-			(xy 67.31 101.6) (xy 55.88 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d907437a-27c1-43ca-b7e5-8de9946c9695")
 	)
 	(wire
 		(pts

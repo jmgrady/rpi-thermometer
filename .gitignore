@@ -42,6 +42,7 @@ Thumbs.db
 *.qbs.user*
 CMakeLists.txt.user*
 ui_mainwindow.py
+ui_settingsdialog.py
 
 # xemacs temporary files
 *.flc
@@ -94,6 +95,9 @@ __pycache__
 Temperature Logger Hat/Temperature Logger Hat-backups/
 
 venv
+
+# Raspi-blinka files
+raspi-blinka.py
 
 # temperature log files
 data/
