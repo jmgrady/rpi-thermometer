@@ -4,8 +4,8 @@ from typing import Optional
 
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
-from ui.ui_settingsdialog import Ui_SettingsDialog
 from appconfig import AppConfig, Sensors, Units
+from ui.ui_settingsdialog import Ui_SettingsDialog
 
 
 class SettingsDialog(QDialog):

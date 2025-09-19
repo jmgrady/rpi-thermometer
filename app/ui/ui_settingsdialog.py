@@ -8,26 +8,63 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QDoubleSpinBox, QLabel, QLineEdit, QRadioButton,
-    QSizePolicy, QTabWidget, QToolButton, QWidget)
+from PySide6.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QLocale,
+    QMetaObject,
+    QObject,
+    QPoint,
+    QRect,
+    QSize,
+    Qt,
+    QTime,
+    QUrl,
+)
+from PySide6.QtGui import (
+    QBrush,
+    QColor,
+    QConicalGradient,
+    QCursor,
+    QFont,
+    QFontDatabase,
+    QGradient,
+    QIcon,
+    QImage,
+    QKeySequence,
+    QLinearGradient,
+    QPainter,
+    QPalette,
+    QPixmap,
+    QRadialGradient,
+    QTransform,
+)
+from PySide6.QtWidgets import (
+    QAbstractButton,
+    QApplication,
+    QDialog,
+    QDialogButtonBox,
+    QDoubleSpinBox,
+    QLabel,
+    QLineEdit,
+    QRadioButton,
+    QSizePolicy,
+    QTabWidget,
+    QToolButton,
+    QWidget,
+)
 import ui.resources_rc
+
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog: QDialog) -> None:
         if not SettingsDialog.objectName():
             SettingsDialog.setObjectName(u"SettingsDialog")
-        SettingsDialog.resize(640, 480)
+        SettingsDialog.resize(640, 357)
         self.buttonBox = QDialogButtonBox(SettingsDialog)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setGeometry(QRect(10, 440, 621, 32))
+        self.buttonBox.setGeometry(QRect(10, 310, 621, 32))
         self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
         self.label_settings = QLabel(SettingsDialog)
@@ -39,7 +76,7 @@ class Ui_SettingsDialog(object):
         self.label_settings.setFont(font)
         self.tabs_settings = QTabWidget(SettingsDialog)
         self.tabs_settings.setObjectName(u"tabs_settings")
-        self.tabs_settings.setGeometry(QRect(30, 60, 601, 361))
+        self.tabs_settings.setGeometry(QRect(30, 60, 601, 241))
         font1 = QFont()
         font1.setPointSize(14)
         self.tabs_settings.setFont(font1)
