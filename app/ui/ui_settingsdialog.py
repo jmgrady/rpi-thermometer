@@ -8,54 +8,17 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QLocale,
-    QMetaObject,
-    QObject,
-    QPoint,
-    QRect,
-    QSize,
-    Qt,
-    QTime,
-    QUrl,
-)
-from PySide6.QtGui import (
-    QBrush,
-    QColor,
-    QConicalGradient,
-    QCursor,
-    QFont,
-    QFontDatabase,
-    QGradient,
-    QIcon,
-    QImage,
-    QKeySequence,
-    QLinearGradient,
-    QPainter,
-    QPalette,
-    QPixmap,
-    QRadialGradient,
-    QTransform,
-)
-from PySide6.QtWidgets import (
-    QAbstractButton,
-    QApplication,
-    QDialog,
-    QDialogButtonBox,
-    QDoubleSpinBox,
-    QLabel,
-    QLineEdit,
-    QRadioButton,
-    QSizePolicy,
-    QTabWidget,
-    QToolButton,
-    QWidget,
-)
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
+    QDoubleSpinBox, QLabel, QLineEdit, QRadioButton,
+    QSizePolicy, QTabWidget, QToolButton, QWidget)
 import ui.resources_rc
-
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog: QDialog) -> None:
@@ -144,7 +107,7 @@ class Ui_SettingsDialog(object):
     # setupUi
 
     def retranslateUi(self, SettingsDialog: QDialog) -> None:
-        SettingsDialog.setWindowTitle(QCoreApplication.translate("SettingsDialog", u"Dialog", None))
+        SettingsDialog.setWindowTitle(QCoreApplication.translate("SettingsDialog", u"Settings", None))
         self.label_settings.setText(QCoreApplication.translate("SettingsDialog", u"Settings", None))
         self.label_units.setText(QCoreApplication.translate("SettingsDialog", u"Units:", None))
         self.units_deg_c.setText(QCoreApplication.translate("SettingsDialog", u"\u00b0C", None))

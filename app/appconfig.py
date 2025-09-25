@@ -59,8 +59,8 @@ class AppConfig(QSettings):
             default_dir = Path(home_dir).resolve() / "rpi-thermometer"
         else:
             default_dir = Path("/opt/rpi/data")
-        save_dir = self.value(ConfigItem.SAVE_DIR.value, str(default_dir))
-        return Path(save_dir).resolve()  # type: ignore[arg-type]
+        save_path = self.value(ConfigItem.SAVE_DIR.value, str(default_dir))
+        return Path(save_path).resolve()  # type: ignore[arg-type]
 
     def set_save_dir(self, save_path: Path) -> None:
         self.setValue(ConfigItem.SAVE_DIR.value, str(save_path))
@@ -76,3 +76,6 @@ class AppConfig(QSettings):
 
     def set_sensor_type(self, sensor: Sensors) -> None:
         self.setValue(ConfigItem.SENSOR_TYPE.value, sensor.value)
+
+
+app_config = AppConfig("PiProjects", "RPi Thermometer")

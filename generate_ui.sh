@@ -13,9 +13,10 @@ cd ${SCRIPT_DIR}
 cd app/ui
 py_file=ui_mainwindow.py
 dlg_file=ui_settingsdialog.py
+prog_file=ui_saveprogressdialog.py
 pyside6-uic mainwindow.ui -o $py_file
 pyside6-uic settings_dialog.ui -o $dlg_file
-
+pyside6-uic saveprogressdialog.ui -o $prog_file
 
 for rc_file in *.qrc; do
     rc_name=${rc_file%.qrc}
@@ -34,3 +35,4 @@ done
 # and a missing return type (None).
 sed -i "s/MainWindow):/MainWindow: QMainWindow) -> None:/" $py_file
 sed -i "s/SettingsDialog):/SettingsDialog: QDialog) -> None:/" $dlg_file
+sed -i "s/SaveProgressDialog):/SaveProgressDialog: QDialog) -> None:/" $prog_file

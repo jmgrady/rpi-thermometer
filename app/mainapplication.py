@@ -4,7 +4,7 @@ from typing import Optional
 
 from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtWidgets import QApplication
-from appconfig import AppConfig, Sensors
+from appconfig import app_config, Sensors
 from baseui import BaseUi
 from graphicalui import GraphicalUi
 from sensors.basesensor import BaseSensor
@@ -18,11 +18,10 @@ class MainApplication(QApplication):
         # Create application components
         self.ui: Optional[BaseUi] = None
         self.sensor: Optional[BaseSensor] = None
-        self.config = AppConfig("PiProjects", "RPi Thermometer")
 
         # Instantiate the selected UI mode
         if args.ui == "gui":
-            self.ui = GraphicalUi(self.config, self)
+            self.ui = GraphicalUi(self)
             self.ui.quit_request.connect(self.quit)
             self.ui.start_measurements.connect(self.start_timer)
             self.ui.stop_measurements.connect(self.stop_timer)
@@ -30,7 +29,7 @@ class MainApplication(QApplication):
             self.ui = BaseUi(self)
 
         # Instantiate the selected sensors
-        sensor_type = self.config.sensor_type()
+        sensor_type = app_config.sensor_type()
         if sensor_type == Sensors.SPI:
 
             from sensors.spitempsensor import SpiTempSensor

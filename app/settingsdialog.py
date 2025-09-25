@@ -4,14 +4,13 @@ from typing import Optional
 
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
-from appconfig import AppConfig, Sensors, Units
+from appconfig import app_config, Sensors, Units
 from ui.ui_settingsdialog import Ui_SettingsDialog
 
 
 class SettingsDialog(QDialog):
-    def __init__(self, config: AppConfig, parent: Optional[QWidget] = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         super(SettingsDialog, self).__init__(parent)
-        self.config = config
         self.ui = Ui_SettingsDialog()
         self.ui.setupUi(self)
 
@@ -32,16 +31,16 @@ class SettingsDialog(QDialog):
             self.ui.save_directory.setText(file_dlg.selectedFiles()[0])
 
     def load_dlg_from_config(self) -> None:
-        self.ui.sample_period.setValue(self.config.sample_period())
-        units = self.config.units()
+        self.ui.sample_period.setValue(app_config.sample_period())
+        units = app_config.units()
         if units == Units.DEG_C:
             self.ui.units_deg_c.setChecked(True)
             self.ui.units_deg_f.setChecked(False)
         else:
             self.ui.units_deg_c.setChecked(False)
             self.ui.units_deg_f.setChecked(True)
-        self.ui.save_directory.setText(str(self.config.save_dir()))
-        sensor = self.config.sensor_type()
+        self.ui.save_directory.setText(str(app_config.save_dir()))
+        sensor = app_config.sensor_type()
         if sensor == Sensors.SPI:
             self.ui.sensor_spi.setChecked(True)
             self.ui.sensor_1_wire.setChecked(False)
@@ -58,11 +57,11 @@ class SettingsDialog(QDialog):
                 logging.warning(f"Unrecognized sensor type: {sensor}")
 
     def load_config_from_dlg(self) -> None:
-        self.config.set_sample_period(self.ui.sample_period.value())
+        app_config.set_sample_period(self.ui.sample_period.value())
         if self.ui.units_deg_c.isChecked():
-            self.config.set_units(Units.DEG_C)
+            app_config.set_units(Units.DEG_C)
         else:
-            self.config.set_units(Units.DEG_F)
+            app_config.set_units(Units.DEG_F)
         save_dir = Path(self.ui.save_directory.text()).resolve()
         if not save_dir.exists():
             save_dir.mkdir(parents=True)
@@ -70,10 +69,10 @@ class SettingsDialog(QDialog):
         elif not save_dir.is_dir():
             logging.error(f"{save_dir} is not a directory.")
         else:
-            self.config.set_save_dir(save_dir)
+            app_config.set_save_dir(save_dir)
         if self.ui.sensor_spi.isChecked():
-            self.config.set_sensor_type(Sensors.SPI)
+            app_config.set_sensor_type(Sensors.SPI)
         elif self.ui.sensor_1_wire.isChecked():
-            self.config.set_sensor_type(Sensors.ONE_WIRE)
+            app_config.set_sensor_type(Sensors.ONE_WIRE)
         else:
-            self.config.set_sensor_type(Sensors.SIM)
+            app_config.set_sensor_type(Sensors.SIM)
