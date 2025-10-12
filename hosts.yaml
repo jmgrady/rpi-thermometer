@@ -4,7 +4,9 @@ all:
     localhost:
       ansible_connection: local
     blackpi:
+    blackpi.local:
     bamboopi:
+    bamboopi.local:
     bluepi:
     redpi:
   children:

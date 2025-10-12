@@ -6,7 +6,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 
 
 class BaseSensor(QObject):
-    def __init__(self, parent: Optional[QObject]):
+    def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
 
     # Signal arguments are (timestamp, measurement)

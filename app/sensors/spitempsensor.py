@@ -9,7 +9,7 @@ from sensors.basesensor import BaseSensor
 
 
 class SpiTempSensor(BaseSensor):
-    def __init__(self, parent: Optional[QObject]):
+    def __init__(self, parent: Optional[QObject] = None):
         super(BaseSensor, self).__init__(parent)
         chip_select = digitalio.DigitalInOut(board.D5)
         chip_select.direction = digitalio.Direction.INPUT

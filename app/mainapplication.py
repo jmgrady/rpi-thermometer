@@ -23,8 +23,7 @@ class MainApplication(QApplication):
         if args.ui == "gui":
             self.ui = GraphicalUi(self)
             self.ui.quit_request.connect(self.quit)
-            self.ui.start_measurements.connect(self.start_timer)
-            self.ui.stop_measurements.connect(self.stop_timer)
+            self.ui.settings_dlg.restart_timer.connect(self.start_timer)
         else:
             self.ui = BaseUi(self)
 
@@ -46,15 +45,19 @@ class MainApplication(QApplication):
             self.timer.timeout.connect(self.sensor.start_measurement)
             self.sensor.meas_complete.connect(self.ui.update_value)
             self.first_measurement.connect(self.sensor.start_measurement)
+            self.start_timer()
 
     first_measurement = Signal()
 
     @Slot()
-    def start_timer(self, period: int) -> None:
-        # start the first measurement
-        self.first_measurement.emit()
+    def start_timer(self) -> None:
+        if self.timer.isActive():
+            self.timer.stop()
+        else:
+            # start the first measurement
+            self.first_measurement.emit()
         # start timer for subsequent measurements
-        self.timer.start(period)
+        self.timer.start(app_config.sample_period_msec())
 
     @Slot()
     def stop_timer(self) -> None:
