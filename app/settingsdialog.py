@@ -45,15 +45,12 @@ class SettingsDialog(QDialog):
         sensor = app_config.sensor_type()
         if sensor == Sensors.SPI:
             self.ui.sensor_spi.setChecked(True)
-            self.ui.sensor_1_wire.setChecked(False)
             self.ui.sensor_simulated.setChecked(False)
         elif sensor == Sensors.ONE_WIRE:
             self.ui.sensor_spi.setChecked(False)
-            self.ui.sensor_1_wire.setChecked(True)
             self.ui.sensor_simulated.setChecked(False)
         else:
             self.ui.sensor_spi.setChecked(False)
-            self.ui.sensor_1_wire.setChecked(False)
             self.ui.sensor_simulated.setChecked(True)
             if sensor != Sensors.SIM:
                 logging.warning(f"Unrecognized sensor type: {sensor}")
@@ -76,7 +73,5 @@ class SettingsDialog(QDialog):
             app_config.set_save_dir(save_dir)
         if self.ui.sensor_spi.isChecked():
             app_config.set_sensor_type(Sensors.SPI)
-        elif self.ui.sensor_1_wire.isChecked():
-            app_config.set_sensor_type(Sensors.ONE_WIRE)
         else:
             app_config.set_sensor_type(Sensors.SIM)

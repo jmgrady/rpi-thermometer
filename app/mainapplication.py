@@ -33,7 +33,7 @@ class MainApplication(QApplication):
 
             from sensors.spitempsensor import SpiTempSensor
 
-            self.sensor = SpiTempSensor(self)
+            self.sensor = SpiTempSensor(0, self)
         elif sensor_type == Sensors.SIM:
             self.sensor = MockSensor(self)
 
@@ -42,9 +42,11 @@ class MainApplication(QApplication):
 
         # Connect the components
         if self.sensor is not None and self.ui is not None:
+            self.first_measurement.connect(self.sensor.start_measurement)
             self.timer.timeout.connect(self.sensor.start_measurement)
             self.sensor.meas_complete.connect(self.ui.update_value)
-            self.first_measurement.connect(self.sensor.start_measurement)
+            self.ui.start_measurements.connect(self.start_timer)
+            self.ui.stop_measurements.connect(self.stop_timer)
             self.start_timer()
 
     first_measurement = Signal()

@@ -15,9 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QDoubleSpinBox, QLabel, QLineEdit, QRadioButton,
-    QSizePolicy, QTabWidget, QToolButton, QWidget)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,
+    QDialogButtonBox, QDoubleSpinBox, QLabel, QLineEdit,
+    QRadioButton, QSizePolicy, QSpinBox, QTabWidget,
+    QToolButton, QWidget)
 import ui.resources_rc
 
 class Ui_SettingsDialog(object):
@@ -54,6 +55,7 @@ class Ui_SettingsDialog(object):
         self.units_deg_f = QRadioButton(self.uiSettingsTab)
         self.units_deg_f.setObjectName(u"units_deg_f")
         self.units_deg_f.setGeometry(QRect(260, 40, 51, 23))
+        self.units_deg_f.setChecked(True)
         self.label_period = QLabel(self.uiSettingsTab)
         self.label_period.setObjectName(u"label_period")
         self.label_period.setGeometry(QRect(30, 90, 151, 18))
@@ -77,30 +79,48 @@ class Ui_SettingsDialog(object):
         self.sample_period.setObjectName(u"sample_period")
         self.sample_period.setGeometry(QRect(190, 86, 65, 27))
         self.sample_period.setDecimals(1)
+        self.sample_period.setValue(10.000000000000000)
         self.tabs_settings.addTab(self.uiSettingsTab, "")
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
         self.label = QLabel(self.tab_2)
         self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(20, 30, 131, 18))
+        self.label.setGeometry(QRect(20, 70, 131, 18))
         self.sensor_spi = QRadioButton(self.tab_2)
         self.sensor_spi.setObjectName(u"sensor_spi")
-        self.sensor_spi.setGeometry(QRect(60, 60, 110, 23))
+        self.sensor_spi.setGeometry(QRect(60, 90, 110, 23))
         self.sensor_spi.setChecked(False)
-        self.sensor_1_wire = QRadioButton(self.tab_2)
-        self.sensor_1_wire.setObjectName(u"sensor_1_wire")
-        self.sensor_1_wire.setGeometry(QRect(60, 100, 110, 23))
         self.sensor_simulated = QRadioButton(self.tab_2)
         self.sensor_simulated.setObjectName(u"sensor_simulated")
-        self.sensor_simulated.setGeometry(QRect(60, 140, 110, 23))
+        self.sensor_simulated.setGeometry(QRect(60, 120, 110, 23))
         self.sensor_simulated.setChecked(True)
+        self.num_sensors = QSpinBox(self.tab_2)
+        self.num_sensors.setObjectName(u"num_sensors")
+        self.num_sensors.setGeometry(QRect(200, 20, 44, 27))
+        self.num_sensors.setMinimum(1)
+        self.num_sensors.setMaximum(2)
+        self.label_2 = QLabel(self.tab_2)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(20, 30, 181, 18))
+        self.simulated_sensor_type = QComboBox(self.tab_2)
+        self.simulated_sensor_type.setObjectName(u"simulated_sensor_type")
+        self.simulated_sensor_type.setGeometry(QRect(190, 120, 201, 26))
+        self.sim_wave_freq = QDoubleSpinBox(self.tab_2)
+        self.sim_wave_freq.setObjectName(u"sim_wave_freq")
+        self.sim_wave_freq.setGeometry(QRect(200, 150, 65, 27))
+        self.freq_label = QLabel(self.tab_2)
+        self.freq_label.setObjectName(u"freq_label")
+        self.freq_label.setGeometry(QRect(80, 150, 111, 27))
+        self.freq_units_lbl = QLabel(self.tab_2)
+        self.freq_units_lbl.setObjectName(u"freq_units_lbl")
+        self.freq_units_lbl.setGeometry(QRect(270, 150, 31, 27))
         self.tabs_settings.addTab(self.tab_2, "")
 
         self.retranslateUi(SettingsDialog)
         self.buttonBox.accepted.connect(SettingsDialog.accept)
         self.buttonBox.rejected.connect(SettingsDialog.reject)
 
-        self.tabs_settings.setCurrentIndex(0)
+        self.tabs_settings.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(SettingsDialog)
@@ -119,8 +139,10 @@ class Ui_SettingsDialog(object):
         self.tabs_settings.setTabText(self.tabs_settings.indexOf(self.uiSettingsTab), QCoreApplication.translate("SettingsDialog", u"User Interface", None))
         self.label.setText(QCoreApplication.translate("SettingsDialog", u"Sensor Type:", None))
         self.sensor_spi.setText(QCoreApplication.translate("SettingsDialog", u"SPI", None))
-        self.sensor_1_wire.setText(QCoreApplication.translate("SettingsDialog", u"1-Wire", None))
         self.sensor_simulated.setText(QCoreApplication.translate("SettingsDialog", u"Simulated", None))
+        self.label_2.setText(QCoreApplication.translate("SettingsDialog", u"Number of Sensors:", None))
+        self.freq_label.setText(QCoreApplication.translate("SettingsDialog", u"Frequency:", None))
+        self.freq_units_lbl.setText(QCoreApplication.translate("SettingsDialog", u"Hz", None))
         self.tabs_settings.setTabText(self.tabs_settings.indexOf(self.tab_2), QCoreApplication.translate("SettingsDialog", u"Devices", None))
     # retranslateUi
 

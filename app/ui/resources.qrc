@@ -7,5 +7,6 @@
         <file>icons/media-pause.svg</file>
         <file>icons/media-record.svg</file>
         <file>icons/restart.svg</file>
+        <file>icons/stop-button.svg</file>
     </qresource>
 </RCC>
