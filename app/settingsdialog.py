@@ -2,13 +2,15 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from PySide6.QtCore import Slot
+from PySide6.QtCore import Signal, Slot
 from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
 from appconfig import app_config, Sensors, Units
 from ui.ui_settingsdialog import Ui_SettingsDialog
 
 
 class SettingsDialog(QDialog):
+    restart_timer = Signal()
+
     def __init__(self, parent: Optional[QWidget] = None):
         super(SettingsDialog, self).__init__(parent)
         self.ui = Ui_SettingsDialog()
@@ -43,21 +45,20 @@ class SettingsDialog(QDialog):
         sensor = app_config.sensor_type()
         if sensor == Sensors.SPI:
             self.ui.sensor_spi.setChecked(True)
-            self.ui.sensor_1_wire.setChecked(False)
             self.ui.sensor_simulated.setChecked(False)
         elif sensor == Sensors.ONE_WIRE:
             self.ui.sensor_spi.setChecked(False)
-            self.ui.sensor_1_wire.setChecked(True)
             self.ui.sensor_simulated.setChecked(False)
         else:
             self.ui.sensor_spi.setChecked(False)
-            self.ui.sensor_1_wire.setChecked(False)
             self.ui.sensor_simulated.setChecked(True)
             if sensor != Sensors.SIM:
                 logging.warning(f"Unrecognized sensor type: {sensor}")
 
     def load_config_from_dlg(self) -> None:
-        app_config.set_sample_period(self.ui.sample_period.value())
+        if app_config.sample_period() != self.ui.sample_period.value():
+            app_config.set_sample_period(self.ui.sample_period.value())
+            self.restart_timer.emit()
         if self.ui.units_deg_c.isChecked():
             app_config.set_units(Units.DEG_C)
         else:
@@ -72,7 +73,5 @@ class SettingsDialog(QDialog):
             app_config.set_save_dir(save_dir)
         if self.ui.sensor_spi.isChecked():
             app_config.set_sensor_type(Sensors.SPI)
-        elif self.ui.sensor_1_wire.isChecked():
-            app_config.set_sensor_type(Sensors.ONE_WIRE)
         else:
             app_config.set_sensor_type(Sensors.SIM)

@@ -2,6 +2,8 @@
 adafruit-blinka
 adafruit-circuitpython-debouncer
 adafruit-circuitpython-max31865
+adafruit-circuitpython-onewire
+adafruit-circuitpython-ds18x20
 adafruit-python-shell
 RPi.GPIO
 

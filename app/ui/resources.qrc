@@ -4,5 +4,9 @@
         <file>icons/media-stop.svg</file>
         <file>icons/thermometer-svgrepo-com.svg</file>
         <file>icons/folder-svgrepo-com.svg</file>
+        <file>icons/media-pause.svg</file>
+        <file>icons/media-record.svg</file>
+        <file>icons/restart.svg</file>
+        <file>icons/stop-button.svg</file>
     </qresource>
 </RCC>
