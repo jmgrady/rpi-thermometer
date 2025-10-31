@@ -96,21 +96,12 @@ class GraphicalUi(BaseUi):
                 scaled_value = value
             self.window.ui.tempValue.setText(f"{scaled_value:.1f} °{app_config.units().value}")
             if self.recording:
-                running_avg_count = int(app_config.averaging_time() / app_config.sample_period())
+                # Update the plot line for the instantaneous ("raw") measurement
                 if "raw" not in self.meas:
                     self.meas["raw"] = MeasSeries([elapsed_time.total_seconds()], [scaled_value])
                 else:
                     self.meas["raw"].times.append(elapsed_time.total_seconds())
                     self.meas["raw"].values.append(scaled_value)
-
-                if len(self.meas["raw"].values) >= running_avg_count:
-                    if "avg" not in self.meas:
-                        running_avg = self.average_samples(
-                            self.meas["raw"].values, running_avg_count
-                        )
-                        self.meas["avg"] = MeasSeries(
-                            [elapsed_time.total_seconds()], [running_avg]
-                        )
 
                 if "raw" in self.data_lines:
                     self.data_lines["raw"].setData(self.meas["raw"].times, self.meas["raw"].values)
@@ -122,6 +113,8 @@ class GraphicalUi(BaseUi):
                         pen=pg.mkPen(color=(255, 0, 0)),
                     )
 
+                # Plot the running average
+                running_avg_count = int(app_config.averaging_time() / app_config.sample_period())
                 if len(self.meas["raw"].values) >= running_avg_count:
                     running_avg = self.average_samples(self.meas["raw"].values, running_avg_count)
                     if "avg" not in self.meas:
