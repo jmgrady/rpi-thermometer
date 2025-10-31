@@ -24,6 +24,8 @@ class ConfigItem(Enum):
     PERIOD = "period"
     SAVE_DIR = "save_dir"
     SENSOR_TYPE = "sensor_type"
+    AVERAGING_TIME = "averaging_time"  # in seconds
+    AVG_OVER_SAMPLES = "avg_over_samples"  # deprecated
 
 
 class AppConfig(QSettings):
@@ -76,6 +78,13 @@ class AppConfig(QSettings):
 
     def set_sensor_type(self, sensor: Sensors) -> None:
         self.setValue(ConfigItem.SENSOR_TYPE.value, sensor.value)
+
+    def averaging_time(self) -> float:
+        str_value = str(self.value(ConfigItem.AVERAGING_TIME.value, "120.0"))
+        return float(str_value)
+
+    def set_averaging_time(self, avg_time: float) -> None:
+        self.setValue(ConfigItem.AVERAGING_TIME.value, avg_time)
 
 
 app_config = AppConfig("PiProjects", "RPi Thermometer")
