@@ -1,15 +1,23 @@
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
 import math
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from PySide6.QtCore import QObject, Slot, QThreadPool
+from PySide6.QtCore import QObject, QThreadPool, Slot
 from PySide6.QtGui import QIcon
-from appconfig import app_config, Units
+from appconfig import Units, app_config
 from baseui import BaseUi
 from mainwindow import MainWindow
+import pyqtgraph as pg
 from savedataagent import SaveDataAgent
 from settingsdialog import SettingsDialog
+
+
+@dataclass
+class MeasSeries:
+    times: List[float]
+    values: List[float]
 
 
 class GraphicalUi(BaseUi):
@@ -22,10 +30,10 @@ class GraphicalUi(BaseUi):
         self.save_data_agent = SaveDataAgent(self.window)
         self.connect_signals()
         self.window.show()
-        self.meas_times: List[float] = []
-        self.meas_values: List[float] = []
+        self.meas: Dict[str, MeasSeries] = {}
         self.threadpool = QThreadPool()
         self.recording = False
+        self.data_lines: Dict[str, pg.PlotDataItem.PlotDataItem] = {}
 
     def connect_signals(self) -> None:
         self.window.ui.actionQuit.triggered.connect(self.send_quit)
@@ -43,28 +51,31 @@ class GraphicalUi(BaseUi):
     def init_ui(self) -> None:
         self.window.ui.tempValue.setText("- ? -")
         self.window.ui.elapsedTimeValue.setText(f"{timedelta(0)}")
+        self.window.ui.graphWindow.setBackground("#e0e0e0")
         self.window.ui.graphWindow.clear()
-        self.meas_times = []
-        self.meas_values = []
+        self.meas = {}
 
     def save_results_as(self) -> None:
         self.save_data_agent.save(
-            self.meas_times,
-            self.meas_values,
+            self.meas["raw"].times,
+            self.meas["raw"].values,
             auto_save_file=False,
             gui=True,
         )
 
     def save_results(self) -> None:
         self.save_data_agent.save(
-            self.meas_times,
-            self.meas_values,
+            self.meas["raw"].times,
+            self.meas["raw"].values,
             auto_save_file=True,
             gui=True,
         )
 
     def send_quit(self) -> None:
         self.quit_request.emit()
+
+    def average_samples(self, samples: List[float], num_samples: int) -> float:
+        return sum(samples[-num_samples:]) / num_samples
 
     @Slot(str, float)
     def update_value(self, timestamp: str, value: float) -> None:
@@ -85,9 +96,45 @@ class GraphicalUi(BaseUi):
                 scaled_value = value
             self.window.ui.tempValue.setText(f"{scaled_value:.1f} °{app_config.units().value}")
             if self.recording:
-                self.meas_times.append(elapsed_time.total_seconds())
-                self.meas_values.append(scaled_value)
-                self.window.ui.graphWindow.plot(self.meas_times, self.meas_values)
+                # Update the plot line for the instantaneous ("raw") measurement
+                if "raw" not in self.meas:
+                    self.meas["raw"] = MeasSeries([elapsed_time.total_seconds()], [scaled_value])
+                else:
+                    self.meas["raw"].times.append(elapsed_time.total_seconds())
+                    self.meas["raw"].values.append(scaled_value)
+
+                if "raw" in self.data_lines:
+                    self.data_lines["raw"].setData(self.meas["raw"].times, self.meas["raw"].values)
+                else:
+
+                    self.data_lines["raw"] = self.window.ui.graphWindow.plot(
+                        self.meas["raw"].times,
+                        self.meas["raw"].values,
+                        pen=pg.mkPen(color=(255, 0, 0)),
+                    )
+
+                # Plot the running average
+                running_avg_count = int(app_config.averaging_time() / app_config.sample_period())
+                if len(self.meas["raw"].values) >= running_avg_count:
+                    running_avg = self.average_samples(self.meas["raw"].values, running_avg_count)
+                    if "avg" not in self.meas:
+                        self.meas["avg"] = MeasSeries(
+                            [elapsed_time.total_seconds()], [running_avg]
+                        )
+                    else:
+                        self.meas["avg"].times.append(elapsed_time.total_seconds())
+                        self.meas["avg"].values.append(running_avg)
+
+                    if "avg" in self.data_lines:
+                        self.data_lines["avg"].setData(
+                            self.meas["avg"].times, self.meas["avg"].values
+                        )
+                    else:
+                        self.data_lines["avg"] = self.window.ui.graphWindow.plot(
+                            self.meas["avg"].times,
+                            self.meas["avg"].values,
+                            pen=pg.mkPen(color=(0, 0, 255)),
+                        )
 
     @Slot()
     def on_start_stop_clicked(self) -> None:

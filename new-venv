@@ -9,12 +9,20 @@ log () {
 
 # Set default values
 QUIET=0
+HOST=0
+UPDATE_OPTS=""
 # Parse arguments
 while [ "${#@}" -gt "0" ] ; do
     opt=$1
     case "$opt" in
         -q|--quiet)
             QUIET=1
+            ;;
+        -h|--host)
+            HOST=1
+            ;;
+        -b|--build)
+            UPDATE_OPTS="--build"
             ;;
         *)
             echo "Unrecognized option, $opt"
@@ -41,7 +49,11 @@ log "Creating virtual environment"
 python3 -m venv venv --system-site-packages
 . venv/bin/activate
 
-log "Installing adafruit shell and blinka"
-pip install --upgrade adafruit-python-shell
-wget -O raspi-blinka.py https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
-sudo -E env PATH=$PATH python3 raspi-blinka.py
+if [ "$HOST" .eq "1" ] ; then
+    log "Installing adafruit shell and blinka"
+    pip install --upgrade adafruit-python-shell
+    wget -O raspi-blinka.py https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/raspi-blinka.py
+    sudo -E env PATH=$PATH python3 raspi-blinka.py
+else
+    ./update-venv $UPDATE_OPTS
+fi

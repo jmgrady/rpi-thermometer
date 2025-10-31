@@ -4,7 +4,7 @@ from typing import Optional
 
 from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtWidgets import QApplication
-from appconfig import app_config, Sensors
+from appconfig import Sensors, app_config
 from baseui import BaseUi
 from graphicalui import GraphicalUi
 from sensors.basesensor import BaseSensor

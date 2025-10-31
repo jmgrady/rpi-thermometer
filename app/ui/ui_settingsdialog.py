@@ -3,23 +3,61 @@
 ################################################################################
 ## Form generated from reading UI file 'settings_dialog.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.2
+## Created by: Qt User Interface Compiler version 6.10.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,
-    QDialogButtonBox, QDoubleSpinBox, QLabel, QLineEdit,
-    QRadioButton, QSizePolicy, QSpinBox, QTabWidget,
-    QToolButton, QWidget)
+from PySide6.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QLocale,
+    QMetaObject,
+    QObject,
+    QPoint,
+    QRect,
+    QSize,
+    Qt,
+    QTime,
+    QUrl,
+)
+from PySide6.QtGui import (
+    QBrush,
+    QColor,
+    QConicalGradient,
+    QCursor,
+    QFont,
+    QFontDatabase,
+    QGradient,
+    QIcon,
+    QImage,
+    QKeySequence,
+    QLinearGradient,
+    QPainter,
+    QPalette,
+    QPixmap,
+    QRadialGradient,
+    QTransform,
+)
+from PySide6.QtWidgets import (
+    QAbstractButton,
+    QApplication,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QDoubleSpinBox,
+    QLabel,
+    QLineEdit,
+    QRadioButton,
+    QSizePolicy,
+    QSpinBox,
+    QTabWidget,
+    QToolButton,
+    QWidget,
+)
 import ui.resources_rc
+
 
 class Ui_SettingsDialog(object):
     def setupUi(self, SettingsDialog: QDialog) -> None:
@@ -48,20 +86,20 @@ class Ui_SettingsDialog(object):
         self.uiSettingsTab.setObjectName(u"uiSettingsTab")
         self.label_units = QLabel(self.uiSettingsTab)
         self.label_units.setObjectName(u"label_units")
-        self.label_units.setGeometry(QRect(30, 40, 91, 18))
+        self.label_units.setGeometry(QRect(30, 20, 91, 18))
         self.units_deg_c = QRadioButton(self.uiSettingsTab)
         self.units_deg_c.setObjectName(u"units_deg_c")
-        self.units_deg_c.setGeometry(QRect(190, 40, 61, 23))
+        self.units_deg_c.setGeometry(QRect(190, 20, 61, 23))
         self.units_deg_f = QRadioButton(self.uiSettingsTab)
         self.units_deg_f.setObjectName(u"units_deg_f")
-        self.units_deg_f.setGeometry(QRect(260, 40, 51, 23))
+        self.units_deg_f.setGeometry(QRect(260, 20, 51, 23))
         self.units_deg_f.setChecked(True)
         self.label_period = QLabel(self.uiSettingsTab)
         self.label_period.setObjectName(u"label_period")
-        self.label_period.setGeometry(QRect(30, 90, 151, 18))
+        self.label_period.setGeometry(QRect(30, 50, 151, 18))
         self.label_period_units = QLabel(self.uiSettingsTab)
         self.label_period_units.setObjectName(u"label_period_units")
-        self.label_period_units.setGeometry(QRect(260, 90, 81, 18))
+        self.label_period_units.setGeometry(QRect(260, 50, 81, 18))
         self.save_dir_label = QLabel(self.uiSettingsTab)
         self.save_dir_label.setObjectName(u"save_dir_label")
         self.save_dir_label.setGeometry(QRect(30, 144, 141, 18))
@@ -77,9 +115,23 @@ class Ui_SettingsDialog(object):
         self.save_dir_dialog.setIconSize(QSize(24, 24))
         self.sample_period = QDoubleSpinBox(self.uiSettingsTab)
         self.sample_period.setObjectName(u"sample_period")
-        self.sample_period.setGeometry(QRect(190, 86, 65, 27))
+        self.sample_period.setGeometry(QRect(190, 46, 65, 27))
         self.sample_period.setDecimals(1)
         self.sample_period.setValue(10.000000000000000)
+        self.label_running_avg = QLabel(self.uiSettingsTab)
+        self.label_running_avg.setObjectName(u"label_running_avg")
+        self.label_running_avg.setGeometry(QRect(30, 80, 151, 31))
+        self.running_avg_time = QDoubleSpinBox(self.uiSettingsTab)
+        self.running_avg_time.setObjectName(u"running_avg_time")
+        self.running_avg_time.setGeometry(QRect(190, 80, 65, 27))
+        self.running_avg_time.setDecimals(1)
+        self.running_avg_time.setValue(10.000000000000000)
+        self.running_avg_units = QComboBox(self.uiSettingsTab)
+        self.running_avg_units.addItem("")
+        self.running_avg_units.addItem("")
+        self.running_avg_units.setObjectName(u"running_avg_units")
+        self.running_avg_units.setGeometry(QRect(260, 80, 101, 26))
+        self.running_avg_units.setInsertPolicy(QComboBox.InsertPolicy.NoInsert)
         self.tabs_settings.addTab(self.uiSettingsTab, "")
         self.tab_2 = QWidget()
         self.tab_2.setObjectName(u"tab_2")
@@ -120,7 +172,7 @@ class Ui_SettingsDialog(object):
         self.buttonBox.accepted.connect(SettingsDialog.accept)
         self.buttonBox.rejected.connect(SettingsDialog.reject)
 
-        self.tabs_settings.setCurrentIndex(1)
+        self.tabs_settings.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(SettingsDialog)
@@ -136,6 +188,10 @@ class Ui_SettingsDialog(object):
         self.label_period_units.setText(QCoreApplication.translate("SettingsDialog", u"seconds", None))
         self.save_dir_label.setText(QCoreApplication.translate("SettingsDialog", u"Save Directory:", None))
         self.save_dir_dialog.setText("")
+        self.label_running_avg.setText(QCoreApplication.translate("SettingsDialog", u"Running Average", None))
+        self.running_avg_units.setItemText(0, QCoreApplication.translate("SettingsDialog", u"seconds", None))
+        self.running_avg_units.setItemText(1, QCoreApplication.translate("SettingsDialog", u"minutes", None))
+
         self.tabs_settings.setTabText(self.tabs_settings.indexOf(self.uiSettingsTab), QCoreApplication.translate("SettingsDialog", u"User Interface", None))
         self.label.setText(QCoreApplication.translate("SettingsDialog", u"Sensor Type:", None))
         self.sensor_spi.setText(QCoreApplication.translate("SettingsDialog", u"SPI", None))

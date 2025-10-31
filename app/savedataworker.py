@@ -4,12 +4,7 @@ import sys
 import traceback
 from typing import List
 
-from PySide6.QtCore import (
-    QObject,
-    QRunnable,
-    Signal,
-    Slot,
-)
+from PySide6.QtCore import QObject, QRunnable, Signal, Slot
 
 
 class WorkerSignals(QObject):

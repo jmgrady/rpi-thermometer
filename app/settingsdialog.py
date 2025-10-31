@@ -4,7 +4,7 @@ from typing import Optional
 
 from PySide6.QtCore import Signal, Slot
 from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
-from appconfig import app_config, Sensors, Units
+from appconfig import Sensors, Units, app_config
 from ui.ui_settingsdialog import Ui_SettingsDialog
 
 
@@ -15,6 +15,12 @@ class SettingsDialog(QDialog):
         super(SettingsDialog, self).__init__(parent)
         self.ui = Ui_SettingsDialog()
         self.ui.setupUi(self)
+        self.min_ix = self.ui.running_avg_units.findText("minutes")
+        self.sec_ix = self.ui.running_avg_units.findText("seconds")
+        if self.min_ix < 0:
+            logging.error("'minutes' missing from units combobox")
+        if self.sec_ix < 0:
+            logging.error("'seconds' missing from units combobox")
 
     def show(self) -> None:
         self.load_dlg_from_config()
@@ -46,14 +52,18 @@ class SettingsDialog(QDialog):
         if sensor == Sensors.SPI:
             self.ui.sensor_spi.setChecked(True)
             self.ui.sensor_simulated.setChecked(False)
-        elif sensor == Sensors.ONE_WIRE:
-            self.ui.sensor_spi.setChecked(False)
-            self.ui.sensor_simulated.setChecked(False)
         else:
             self.ui.sensor_spi.setChecked(False)
             self.ui.sensor_simulated.setChecked(True)
             if sensor != Sensors.SIM:
                 logging.warning(f"Unrecognized sensor type: {sensor}")
+        avg_time = app_config.averaging_time()
+        if avg_time > 120:
+            self.ui.running_avg_time.setValue(avg_time / 60.0)
+            self.ui.running_avg_units.setCurrentIndex(self.min_ix)
+        else:
+            self.ui.running_avg_time.setValue(avg_time)
+            self.ui.running_avg_units.setCurrentIndex(self.sec_ix)
 
     def load_config_from_dlg(self) -> None:
         if app_config.sample_period() != self.ui.sample_period.value():
@@ -75,3 +85,7 @@ class SettingsDialog(QDialog):
             app_config.set_sensor_type(Sensors.SPI)
         else:
             app_config.set_sensor_type(Sensors.SIM)
+        avg_time = self.ui.running_avg_time.value()
+        if self.ui.running_avg_units.currentIndex() == self.min_ix:
+            avg_time *= 60.0
+        app_config.set_averaging_time(avg_time)

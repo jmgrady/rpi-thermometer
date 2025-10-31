@@ -3,31 +3,65 @@
 ################################################################################
 ## Form generated from reading UI file 'mainwindow.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.2
+## Created by: Qt User Interface Compiler version 6.10.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
-    QCursor, QFont, QFontDatabase, QGradient,
-    QIcon, QImage, QKeySequence, QLinearGradient,
-    QPainter, QPalette, QPixmap, QRadialGradient,
-    QTransform)
-from PySide6.QtWidgets import (QApplication, QFormLayout, QLabel, QMainWindow,
-    QMenu, QMenuBar, QPushButton, QSizePolicy,
-    QStatusBar, QWidget)
-
+from PySide6.QtCore import (
+    QCoreApplication,
+    QDate,
+    QDateTime,
+    QLocale,
+    QMetaObject,
+    QObject,
+    QPoint,
+    QRect,
+    QSize,
+    Qt,
+    QTime,
+    QUrl,
+)
+from PySide6.QtGui import (
+    QAction,
+    QBrush,
+    QColor,
+    QConicalGradient,
+    QCursor,
+    QFont,
+    QFontDatabase,
+    QGradient,
+    QIcon,
+    QImage,
+    QKeySequence,
+    QLinearGradient,
+    QPainter,
+    QPalette,
+    QPixmap,
+    QRadialGradient,
+    QTransform,
+)
+from PySide6.QtWidgets import (
+    QApplication,
+    QFormLayout,
+    QLabel,
+    QMainWindow,
+    QMenu,
+    QMenuBar,
+    QPushButton,
+    QSizePolicy,
+    QStatusBar,
+    QWidget,
+)
 from pyqtgraph import PlotWidget
 import ui.resources_rc
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow: QMainWindow) -> None:
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(800, 480)
+        MainWindow.resize(800, 430)
         font = QFont()
         font.setPointSize(14)
         MainWindow.setFont(font)
@@ -48,7 +82,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setAutoFillBackground(True)
         self.formLayoutWidget = QWidget(self.centralwidget)
         self.formLayoutWidget.setObjectName(u"formLayoutWidget")
-        self.formLayoutWidget.setGeometry(QRect(20, 10, 501, 115))
+        self.formLayoutWidget.setGeometry(QRect(20, 10, 501, 81))
         self.formLayout = QFormLayout(self.formLayoutWidget)
         self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -56,7 +90,7 @@ class Ui_MainWindow(object):
         self.tempLabel.setObjectName(u"tempLabel")
         self.tempLabel.setMinimumSize(QSize(0, 78))
         font1 = QFont()
-        font1.setPointSize(18)
+        font1.setPointSize(12)
         self.tempLabel.setFont(font1)
 
         self.formLayout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.tempLabel)
@@ -64,7 +98,7 @@ class Ui_MainWindow(object):
         self.tempValue = QLabel(self.formLayoutWidget)
         self.tempValue.setObjectName(u"tempValue")
         font2 = QFont()
-        font2.setPointSize(36)
+        font2.setPointSize(24)
         self.tempValue.setFont(font2)
         self.tempValue.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -72,7 +106,7 @@ class Ui_MainWindow(object):
 
         self.timeLabel = QLabel(self.formLayoutWidget)
         self.timeLabel.setObjectName(u"timeLabel")
-        self.timeLabel.setFont(font)
+        self.timeLabel.setFont(font1)
 
         self.formLayout.setWidget(1, QFormLayout.ItemRole.LabelRole, self.timeLabel)
 
@@ -85,10 +119,10 @@ class Ui_MainWindow(object):
 
         self.graphWindow = PlotWidget(self.centralwidget)
         self.graphWindow.setObjectName(u"graphWindow")
-        self.graphWindow.setGeometry(QRect(20, 150, 711, 271))
+        self.graphWindow.setGeometry(QRect(20, 109, 761, 271))
         self.startStopButton = QPushButton(self.centralwidget)
         self.startStopButton.setObjectName(u"startStopButton")
-        self.startStopButton.setGeometry(QRect(620, 30, 71, 61))
+        self.startStopButton.setGeometry(QRect(530, 10, 71, 61))
         icon1 = QIcon()
         icon1.addFile(u":/resources/icons/media-record.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.startStopButton.setIcon(icon1)
@@ -96,7 +130,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 34))
+        self.menubar.setGeometry(QRect(0, 0, 800, 25))
         self.menubar.setFont(font1)
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")

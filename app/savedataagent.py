@@ -10,9 +10,9 @@ import logging
 from pathlib import Path
 from typing import List, Optional
 
+from PySide6.QtCore import QObject, QThreadPool, Signal
+from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
 from appconfig import app_config
-from PySide6.QtCore import QObject, Signal, QThreadPool
-from PySide6.QtWidgets import QWidget, QDialog, QFileDialog
 from savedataworker import SaveDataWorker
 from saveprogressdialog import SaveProgressDialog
 
