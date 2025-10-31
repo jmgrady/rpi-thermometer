@@ -114,27 +114,25 @@ class GraphicalUi(BaseUi):
                     )
 
                 # Plot the running average
-                running_avg_count = int(app_config.averaging_time() / app_config.sample_period())
-                if len(self.meas["raw"].values) >= running_avg_count:
-                    running_avg = self.average_samples(self.meas["raw"].values, running_avg_count)
-                    if "avg" not in self.meas:
-                        self.meas["avg"] = MeasSeries(
-                            [elapsed_time.total_seconds()], [running_avg]
-                        )
-                    else:
-                        self.meas["avg"].times.append(elapsed_time.total_seconds())
-                        self.meas["avg"].values.append(running_avg)
+                running_avg_count = min(
+                    len(self.meas["raw"].values),
+                    int(app_config.averaging_time() / app_config.sample_period()),
+                )
+                running_avg = self.average_samples(self.meas["raw"].values, running_avg_count)
+                if "avg" not in self.meas:
+                    self.meas["avg"] = MeasSeries([elapsed_time.total_seconds()], [running_avg])
+                else:
+                    self.meas["avg"].times.append(elapsed_time.total_seconds())
+                    self.meas["avg"].values.append(running_avg)
 
-                    if "avg" in self.data_lines:
-                        self.data_lines["avg"].setData(
-                            self.meas["avg"].times, self.meas["avg"].values
-                        )
-                    else:
-                        self.data_lines["avg"] = self.window.ui.graphWindow.plot(
-                            self.meas["avg"].times,
-                            self.meas["avg"].values,
-                            pen=pg.mkPen(color=(0, 0, 255)),
-                        )
+                if "avg" in self.data_lines:
+                    self.data_lines["avg"].setData(self.meas["avg"].times, self.meas["avg"].values)
+                else:
+                    self.data_lines["avg"] = self.window.ui.graphWindow.plot(
+                        self.meas["avg"].times,
+                        self.meas["avg"].values,
+                        pen=pg.mkPen(color=(0, 0, 255)),
+                    )
 
     @Slot()
     def on_start_stop_clicked(self) -> None:
