@@ -4,8 +4,8 @@ import logging
 import math
 from typing import Dict, List, Optional
 
-from PySide6.QtCore import QObject, QThreadPool, Slot
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QObject, QThreadPool, Slot, Qt
+from PySide6.QtGui import QBrush, QPen
 from appconfig import Units, app_config
 from baseui import BaseUi
 from mainwindow import MainWindow
@@ -40,13 +40,11 @@ class GraphicalUi(BaseUi):
         self.window.ui.actionSave.triggered.connect(self.save_results)
         self.window.ui.actionSave_As.triggered.connect(self.save_results_as)
         self.window.ui.actionSettings.triggered.connect(self.on_settings)
-        self.window.ui.startStopButton.clicked.connect(self.on_start_stop_clicked)
+        self.window.ui.graphButton.clicked.connect(self.on_graph_button_clicked)
+        self.window.ui.addMarkButton.clicked.connect(self.on_add_mark_button_clicked)
 
-    def set_button_icon(self) -> None:
-        if self.recording:
-            self.window.ui.startStopButton.setIcon(QIcon(":/resources/icons/stop-button.svg"))
-        else:
-            self.window.ui.startStopButton.setIcon(QIcon(":/resources/icons/media-record.svg"))
+    def set_button_status(self) -> None:
+        self.window.ui.addMarkButton.setEnabled(self.recording)
 
     def init_ui(self) -> None:
         self.window.ui.tempValue.setText("- ? -")
@@ -77,6 +75,36 @@ class GraphicalUi(BaseUi):
     def average_samples(self, samples: List[float], num_samples: int) -> float:
         return sum(samples[-num_samples:]) / num_samples
 
+    def add_sample(self, series_name: str, elapsed_sec: float, value: float) -> None:
+        if series_name not in self.meas:
+            self.meas[series_name] = MeasSeries([elapsed_sec], [value])
+        else:
+            self.meas[series_name].times.append(elapsed_sec)
+            self.meas[series_name].values.append(value)
+
+    def update_graph(
+        self,
+        series_name: str,
+        *,
+        pen: QPen,
+        symbol: Optional[str] = None,
+        symbol_size: Optional[int] = None,
+        symbol_brush: Optional[QBrush] = None,
+    ) -> None:
+        if series_name in self.data_lines:
+            self.data_lines[series_name].setData(
+                self.meas[series_name].times, self.meas[series_name].values
+            )
+        else:
+            self.data_lines[series_name] = self.window.ui.graphWindow.plot(
+                self.meas[series_name].times,
+                self.meas[series_name].values,
+                pen=pen,
+                symbol=symbol,
+                symbolSize=symbol_size,
+                symbolBrush=symbol_brush,
+            )
+
     @Slot(str, float)
     def update_value(self, timestamp: str, value: float) -> None:
         elapsed_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f") - self.start_time
@@ -97,21 +125,8 @@ class GraphicalUi(BaseUi):
             self.window.ui.tempValue.setText(f"{scaled_value:.1f} °{app_config.units().value}")
             if self.recording:
                 # Update the plot line for the instantaneous ("raw") measurement
-                if "raw" not in self.meas:
-                    self.meas["raw"] = MeasSeries([elapsed_time.total_seconds()], [scaled_value])
-                else:
-                    self.meas["raw"].times.append(elapsed_time.total_seconds())
-                    self.meas["raw"].values.append(scaled_value)
-
-                if "raw" in self.data_lines:
-                    self.data_lines["raw"].setData(self.meas["raw"].times, self.meas["raw"].values)
-                else:
-
-                    self.data_lines["raw"] = self.window.ui.graphWindow.plot(
-                        self.meas["raw"].times,
-                        self.meas["raw"].values,
-                        pen=pg.mkPen(color=(255, 0, 0)),
-                    )
+                self.add_sample("raw", elapsed_time.total_seconds(), scaled_value)
+                self.update_graph("raw", pen=pg.mkPen(255, 0, 0))
 
                 # Plot the running average
                 running_avg_count = min(
@@ -119,31 +134,32 @@ class GraphicalUi(BaseUi):
                     int(app_config.averaging_time() / app_config.sample_period()),
                 )
                 running_avg = self.average_samples(self.meas["raw"].values, running_avg_count)
-                if "avg" not in self.meas:
-                    self.meas["avg"] = MeasSeries([elapsed_time.total_seconds()], [running_avg])
-                else:
-                    self.meas["avg"].times.append(elapsed_time.total_seconds())
-                    self.meas["avg"].values.append(running_avg)
-
-                if "avg" in self.data_lines:
-                    self.data_lines["avg"].setData(self.meas["avg"].times, self.meas["avg"].values)
-                else:
-                    self.data_lines["avg"] = self.window.ui.graphWindow.plot(
-                        self.meas["avg"].times,
-                        self.meas["avg"].values,
-                        pen=pg.mkPen(color=(0, 0, 255)),
-                    )
+                self.add_sample("avg", elapsed_time.total_seconds(), running_avg)
+                self.update_graph("avg", pen=pg.mkPen(0, 0, 255))
 
     @Slot()
-    def on_start_stop_clicked(self) -> None:
+    def on_graph_button_clicked(self) -> None:
         if self.recording:
             self.recording = False
         else:
             self.recording = True
             self.start_time = datetime.now()
             self.init_ui()
-        self.set_button_icon()
+        self.set_button_status()
 
     @Slot()
     def on_settings(self) -> None:
         self.settings_dlg.show()
+
+    @Slot()
+    def on_add_mark_button_clicked(self) -> None:
+        logging.info(f"Mark set at {datetime.now()}")
+        if "raw" in self.meas:
+            self.add_sample("mark", self.meas["raw"].times[-1], self.meas["raw"].values[-1])
+            self.update_graph(
+                "mark",
+                pen=QPen(Qt.PenStyle.NoPen),
+                symbol="|",
+                symbol_size=25,
+                symbol_brush=pg.mkBrush((0, 128, 0)),
+            )

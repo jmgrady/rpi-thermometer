@@ -8,54 +8,20 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (
-    QCoreApplication,
-    QDate,
-    QDateTime,
-    QLocale,
-    QMetaObject,
-    QObject,
-    QPoint,
-    QRect,
-    QSize,
-    Qt,
-    QTime,
-    QUrl,
-)
-from PySide6.QtGui import (
-    QAction,
-    QBrush,
-    QColor,
-    QConicalGradient,
-    QCursor,
-    QFont,
-    QFontDatabase,
-    QGradient,
-    QIcon,
-    QImage,
-    QKeySequence,
-    QLinearGradient,
-    QPainter,
-    QPalette,
-    QPixmap,
-    QRadialGradient,
-    QTransform,
-)
-from PySide6.QtWidgets import (
-    QApplication,
-    QFormLayout,
-    QLabel,
-    QMainWindow,
-    QMenu,
-    QMenuBar,
-    QPushButton,
-    QSizePolicy,
-    QStatusBar,
-    QWidget,
-)
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+    QCursor, QFont, QFontDatabase, QGradient,
+    QIcon, QImage, QKeySequence, QLinearGradient,
+    QPainter, QPalette, QPixmap, QRadialGradient,
+    QTransform)
+from PySide6.QtWidgets import (QApplication, QFormLayout, QLabel, QMainWindow,
+    QMenu, QMenuBar, QPushButton, QSizePolicy,
+    QStatusBar, QWidget)
+
 from pyqtgraph import PlotWidget
 import ui.resources_rc
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow: QMainWindow) -> None:
@@ -82,7 +48,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setAutoFillBackground(True)
         self.formLayoutWidget = QWidget(self.centralwidget)
         self.formLayoutWidget.setObjectName(u"formLayoutWidget")
-        self.formLayoutWidget.setGeometry(QRect(20, 10, 501, 81))
+        self.formLayoutWidget.setGeometry(QRect(20, 10, 501, 106))
         self.formLayout = QFormLayout(self.formLayoutWidget)
         self.formLayout.setObjectName(u"formLayout")
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -119,14 +85,24 @@ class Ui_MainWindow(object):
 
         self.graphWindow = PlotWidget(self.centralwidget)
         self.graphWindow.setObjectName(u"graphWindow")
-        self.graphWindow.setGeometry(QRect(20, 109, 761, 271))
-        self.startStopButton = QPushButton(self.centralwidget)
-        self.startStopButton.setObjectName(u"startStopButton")
-        self.startStopButton.setGeometry(QRect(530, 10, 71, 61))
+        self.graphWindow.setGeometry(QRect(20, 129, 761, 251))
+        self.graphButton = QPushButton(self.centralwidget)
+        self.graphButton.setObjectName(u"graphButton")
+        self.graphButton.setGeometry(QRect(530, 10, 71, 61))
         icon1 = QIcon()
-        icon1.addFile(u":/resources/icons/media-record.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.startStopButton.setIcon(icon1)
-        self.startStopButton.setIconSize(QSize(48, 48))
+        icon1.addFile(u":/resources/icons/graph-duotone.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.graphButton.setIcon(icon1)
+        self.graphButton.setIconSize(QSize(128, 128))
+        self.graphButton.setCheckable(True)
+        self.addMarkButton = QPushButton(self.centralwidget)
+        self.addMarkButton.setObjectName(u"addMarkButton")
+        self.addMarkButton.setEnabled(False)
+        self.addMarkButton.setGeometry(QRect(610, 10, 71, 61))
+        icon2 = QIcon()
+        icon2.addFile(u":/resources/icons/new-note.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.addMarkButton.setIcon(icon2)
+        self.addMarkButton.setIconSize(QSize(64, 64))
+        self.addMarkButton.setCheckable(False)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -170,7 +146,8 @@ class Ui_MainWindow(object):
         self.tempValue.setText(QCoreApplication.translate("MainWindow", u"-?-", None))
         self.timeLabel.setText(QCoreApplication.translate("MainWindow", u"Elapsed Time:", None))
         self.elapsedTimeValue.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.startStopButton.setText("")
+        self.graphButton.setText("")
+        self.addMarkButton.setText("")
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi
 

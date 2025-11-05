@@ -35,7 +35,7 @@
       <x>20</x>
       <y>10</y>
       <width>501</width>
-      <height>81</height>
+      <height>106</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -105,13 +105,13 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>109</y>
+      <y>129</y>
       <width>761</width>
-      <height>271</height>
+      <height>251</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="startStopButton">
+   <widget class="QPushButton" name="graphButton">
     <property name="geometry">
      <rect>
       <x>530</x>
@@ -125,13 +125,45 @@
     </property>
     <property name="icon">
      <iconset resource="resources.qrc">
-      <normaloff>:/resources/icons/media-record.svg</normaloff>:/resources/icons/media-record.svg</iconset>
+      <normaloff>:/resources/icons/graph-duotone.svg</normaloff>:/resources/icons/graph-duotone.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
-      <width>48</width>
-      <height>48</height>
+      <width>128</width>
+      <height>128</height>
      </size>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addMarkButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>10</y>
+      <width>71</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="resources.qrc">
+      <normaloff>:/resources/icons/new-note.svg</normaloff>:/resources/icons/new-note.svg</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>64</width>
+      <height>64</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
