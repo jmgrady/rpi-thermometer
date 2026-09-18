@@ -24,6 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--period",
         "-p",
+        type=int,
         help="Period (in seconds) between temperature measurements.",
     )
     return parser.parse_args()
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     args = parse_args()
 
     if args.channel == "1":
-        chip_select = digitalio.DigitalInOut(board.D26)
+        chip_select = digitalio.DigitalInOut(board.D6)
     else:
         chip_select = digitalio.DigitalInOut(board.D5)
 
@@ -44,6 +45,7 @@ if __name__ == "__main__":
         board.SPI(), chip_select, rtd_nominal=100, ref_resistor=400, wires=3
     )
     while True:
+        print(f"{datetime.now()}: {sensor.resistance:.1f} Ω")
         dev_value = sensor.temperature
         if args.fahrenheit:
             scaled_value = dev_value * 9.0 / 5.0 + 32.0
@@ -51,7 +53,7 @@ if __name__ == "__main__":
         else:
             scaled_value = dev_value
             units = "°C"
-        print(f"{datetime.now()}: {scaled_value:.2f}{units}")
+        print(f"\t{scaled_value:.2f}{units}")
         if args.period is not None:
             time.sleep(args.period)
         else:
