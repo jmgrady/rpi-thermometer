@@ -1,6 +1,7 @@
 from enum import Enum, unique
 import os
 from pathlib import Path
+from typing import Dict, List, Tuple
 
 from PySide6.QtCore import QSettings
 
@@ -26,9 +27,22 @@ class ConfigItem(Enum):
     SENSOR_TYPE = "sensor_type"
     AVERAGING_TIME = "averaging_time"  # in seconds
     AVG_OVER_SAMPLES = "avg_over_samples"  # deprecated
+    NUM_CHANNELS = "num_channels"
 
 
 class AppConfig(QSettings):
+    color_map: Dict[str, List[Tuple[int, int, int]]] = {
+        "avg": [(0, 0, 255), (0, 0, 127)],
+        "raw": [(255, 0, 0), (127, 0, 0)],
+        "mark": [(0, 127, 0), (0, 127, 0)],
+    }
+
+    def get_color(self, name: str, channel: int) -> Tuple[int, int, int]:
+        if name in AppConfig.color_map:
+            if channel < self.num_channels():
+                return AppConfig.color_map[name][channel]
+        return (0, 0, 0)
+
     def __init__(self, scope: str, app_name: str):
         super(AppConfig, self).__init__(scope, app_name)
 
@@ -85,6 +99,13 @@ class AppConfig(QSettings):
 
     def set_averaging_time(self, avg_time: float) -> None:
         self.setValue(ConfigItem.AVERAGING_TIME.value, avg_time)
+
+    def num_channels(self) -> int:
+        str_value = str(self.value(ConfigItem.NUM_CHANNELS.value, "1"))
+        return int(str_value)
+
+    def set_num_channels(self, num_channels: int) -> None:
+        self.setValue(ConfigItem.NUM_CHANNELS.value, num_channels)
 
 
 app_config = AppConfig("PiProjects", "RPi Thermometer")

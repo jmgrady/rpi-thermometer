@@ -64,6 +64,7 @@ class SettingsDialog(QDialog):
         else:
             self.ui.running_avg_time.setValue(avg_time)
             self.ui.running_avg_units.setCurrentIndex(self.sec_ix)
+        self.ui.num_sensors.setValue(app_config.num_channels())
 
     def load_config_from_dlg(self) -> None:
         if app_config.sample_period() != self.ui.sample_period.value():
@@ -89,3 +90,4 @@ class SettingsDialog(QDialog):
         if self.ui.running_avg_units.currentIndex() == self.min_ix:
             avg_time *= 60.0
         app_config.set_averaging_time(avg_time)
+        app_config.set_num_channels(self.ui.num_sensors.value())

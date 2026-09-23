@@ -9,12 +9,12 @@ class BaseSensor(QObject):
     def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
 
-    # Signal arguments are (timestamp, measurement)
+    # Signal arguments are (timestamp, channel, measurement)
     # timestamp is the time in seconds from self.base_tine
-    meas_complete = Signal(str, float)
+    meas_complete = Signal(str, int, float)
 
     @Slot()
     def start_measurement(self) -> None:
         timestamp = datetime.now()
         logging.debug(f"{timestamp}: BaseSensor.start_measurement()")
-        self.meas_complete.emit(timestamp, 0.0)
+        self.meas_complete.emit(timestamp, 0, 0.0)
