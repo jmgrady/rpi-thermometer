@@ -17,7 +17,6 @@ This software uses a custom Raspberry Pi Hat to connect the temperature sensor t
    ```
 
 2. Create a Python virtual environment
-
    1. Install the required packages from `apt`:
 
       ```console
@@ -29,6 +28,7 @@ This software uses a custom Raspberry Pi Hat to connect the temperature sensor t
 
       ```console
       cd rpi-thermometer
+      ./new-venv
       ```
 
       A reboot will probably be required when complete.
@@ -81,7 +81,7 @@ ansible-playbook -i hosts.yml install.yaml --limit localhost
 
 ### Notes
 
-1. If your Raspberry Pi requires a password for `sudo`, add the `-K` option to the command above.
+1. If your Raspberry Pi requires a password for `sudo`, add the `-K` option to the `ansible-playbook` commands above.
 
 ## Updating the Application
 

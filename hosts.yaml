@@ -9,4 +9,5 @@ all:
     bamboopi.local:
     bluepi:
     redpi:
+    zeropi:
   children:

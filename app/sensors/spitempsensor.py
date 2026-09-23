@@ -10,7 +10,7 @@ from sensors.basesensor import BaseSensor
 
 
 class SpiTempSensor(BaseSensor):
-    spi_channels = (digitalio.DigitalInOut(board.D5), digitalio.DigitalInOut(board.D26))
+    spi_channels = (digitalio.DigitalInOut(board.D5), digitalio.DigitalInOut(board.D6))
 
     def __init__(self, channel_number: int, parent: Optional[QObject] = None):
         super(BaseSensor, self).__init__(parent)
@@ -18,11 +18,12 @@ class SpiTempSensor(BaseSensor):
             logging.error(f"Invalid channel number requested: {channel_number}")
             self.sensor = None
         else:
-            chip_select = self.spi_channels[channel_number]
-            chip_select.direction = digitalio.Direction.INPUT
-            chip_select.pull = digitalio.Pull.UP
             self.sensor = adafruit_max31865.MAX31865(
-                board.SPI(), chip_select, rtd_nominal=100, ref_resistor=400, wires=3
+                board.SPI(),
+                self.spi_channels[channel_number],
+                rtd_nominal=100,
+                ref_resistor=430,
+                wires=3
             )
 
     @Slot()
