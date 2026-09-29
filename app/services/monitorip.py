@@ -54,7 +54,7 @@ class IpDisplay:
     def run(self, *, if_type: str) -> None:
         while True:
             if not self.l_display_select.value:
-                (netname, device) = get_network_name(if_type)
+                netname, device = get_network_name(if_type)
                 logging.debug(f"Network Name: {netname}")
                 ip_addr = get_dev_ip(device)
                 logging.debug(f"IP {ip_addr}")

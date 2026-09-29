@@ -2,9 +2,10 @@ import logging
 from pathlib import Path
 import sys
 import traceback
-from typing import List
 
 from PySide6.QtCore import QObject, QRunnable, Signal, Slot
+from appconfig import app_config
+from datatypes import Measurements
 
 
 class WorkerSignals(QObject):
@@ -40,13 +41,11 @@ class SaveDataWorker(QRunnable):
 
     def __init__(
         self,
-        meas_times: List[float],
-        meas_values: List[float],
+        data: Measurements,
         output_path: Path,
     ):
         super().__init__()
-        self.meas_times = meas_times
-        self.meas_values = meas_values
+        self.data = data
         self.output_path = output_path
         self.signals = WorkerSignals()
         # Add the callbacks to our kwargs
@@ -54,15 +53,27 @@ class SaveDataWorker(QRunnable):
 
     @Slot()
     def run(self) -> None:
+        """
+        This function writes the data out to the results file.  It ASSUMES that the number of
+        samples is the same for all channels.
+        """
         try:
+            total_lines = len(self.data.times)
+            curr_line = 0
             with open(self.output_path, "w") as output_file:
-                for i in range(0, len(self.meas_times) - 1):
+                for i in range(0, len(self.data.times)):
                     if self.killed:
                         logging.info("Worker Thread canceled.")
                         break
-                    output_file.write(f"{self.meas_times[i]}\t{self.meas_values[i]}\n")
-                    if i % 10 == 0:
-                        self.signals.progress.emit(100.0 * (i / len(self.meas_times)))
+                    output_file.write(f"{self.data.times[i]}")
+                    for j in range(
+                        i * app_config.num_channels(), (i + 1) * app_config.num_channels()
+                    ):
+                        output_file.write(f"\t{self.data.values[j]}")
+                    output_file.write("\n")
+                    curr_line += 1
+                    if curr_line % 10 == 0:
+                        self.signals.progress.emit(100.0 * (curr_line / total_lines))
         except Exception:
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]

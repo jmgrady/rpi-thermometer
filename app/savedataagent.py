@@ -8,11 +8,12 @@ the progress may be requested in the save request.
 from datetime import datetime
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from PySide6.QtCore import QObject, QThreadPool, Signal
 from PySide6.QtWidgets import QDialog, QFileDialog, QWidget
 from appconfig import app_config
+from datatypes import Measurements
 from savedataworker import SaveDataWorker
 from saveprogressdialog import SaveProgressDialog
 
@@ -21,8 +22,7 @@ class SaveDataAgent(QObject):
     def __init__(self, parent: Optional[QWidget]):
         super().__init__(parent)
         self.window = parent
-        self.meas_times: List[float] = []
-        self.meas_values: List[float] = []
+        self.data = Measurements([], [])
         self.worker: Optional[SaveDataWorker] = None
         self.threadpool = QThreadPool()
         self.progress_dlg: Optional[SaveProgressDialog] = None
@@ -31,15 +31,13 @@ class SaveDataAgent(QObject):
 
     def save(
         self,
-        meas_times: List[float],
-        meas_values: List[float],
+        dataset: Measurements,
         *,
         auto_save_file: bool = True,
         gui: bool = True,
         start_time: Optional[datetime] = None,
     ) -> None:
-        self.meas_times = meas_times.copy()
-        self.meas_values = meas_values.copy()
+        self.data = Measurements(dataset.times.copy(), dataset.values.copy())
         if auto_save_file or not gui:
             if start_time is None:
                 file_time = datetime.now()
@@ -68,7 +66,7 @@ class SaveDataAgent(QObject):
     def write_results_file(self, output_path: Path, *, gui: bool = True) -> None:
         logging.info(f"Saving to {output_path}")
         # Create Worker thread to save the data
-        worker = SaveDataWorker(self.meas_times.copy(), self.meas_values.copy(), output_path)
+        worker = SaveDataWorker(self.data, output_path)
         worker.signals.finished.connect(self.thread_complete)
         self.kill_thread.connect(worker.kill)
         if gui:

@@ -1,6 +1,5 @@
 from datetime import datetime
 import logging
-from time import sleep
 from typing import List, Optional
 
 from PySide6.QtCore import QObject, Slot
@@ -33,9 +32,11 @@ class SpiTempSensor(BaseSensor):
 
     @Slot()
     def start_measurement(self) -> None:
+        timestamp = str(datetime.now())
+        temperature_list: List[float] = []
         for ix in range(len(self.sensor_list)):
-            timestamp = datetime.now()
-            temperature = self.sensor_list[ix].temperature
-            self.meas_complete.emit(f"{timestamp}", ix, temperature)
-            logging.info(f"{timestamp}: emitted value {temperature} for channel {ix}")
-            sleep(0.5)
+            temperature_list.append(self.sensor_list[ix].temperature)
+
+        value_str = ";".join(map(str, temperature_list))
+        self.meas_complete.emit(f"{timestamp}", value_str)
+        logging.info(f"{timestamp}: emitted value {value_str}")

@@ -1,7 +1,6 @@
 from enum import Enum, unique
 import os
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 from PySide6.QtCore import QSettings
 
@@ -31,18 +30,6 @@ class ConfigItem(Enum):
 
 
 class AppConfig(QSettings):
-    color_map: Dict[str, List[Tuple[int, int, int]]] = {
-        "avg": [(0, 0, 255), (0, 0, 127)],
-        "raw": [(255, 0, 0), (127, 0, 0)],
-        "mark": [(0, 127, 0), (0, 127, 0)],
-    }
-
-    def get_color(self, name: str, channel: int) -> Tuple[int, int, int]:
-        if name in AppConfig.color_map:
-            if channel < self.num_channels():
-                return AppConfig.color_map[name][channel]
-        return (0, 0, 0)
-
     def __init__(self, scope: str, app_name: str):
         super(AppConfig, self).__init__(scope, app_name)
 
