@@ -26,6 +26,7 @@ class ConfigItem(Enum):
     SENSOR_TYPE = "sensor_type"
     AVERAGING_TIME = "averaging_time"  # in seconds
     AVG_OVER_SAMPLES = "avg_over_samples"  # deprecated
+    NUM_CHANNELS = "num_channels"
 
 
 class AppConfig(QSettings):
@@ -85,6 +86,13 @@ class AppConfig(QSettings):
 
     def set_averaging_time(self, avg_time: float) -> None:
         self.setValue(ConfigItem.AVERAGING_TIME.value, avg_time)
+
+    def num_channels(self) -> int:
+        str_value = str(self.value(ConfigItem.NUM_CHANNELS.value, "1"))
+        return int(str_value)
+
+    def set_num_channels(self, num_channels: int) -> None:
+        self.setValue(ConfigItem.NUM_CHANNELS.value, num_channels)
 
 
 app_config = AppConfig("PiProjects", "RPi Thermometer")

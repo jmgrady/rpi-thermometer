@@ -1,23 +1,17 @@
-from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
 import math
 from typing import Dict, List, Optional
 
-from PySide6.QtCore import QObject, QThreadPool, Slot, Qt
-from PySide6.QtGui import QBrush, QPen
+from PySide6.QtCore import QObject, QThreadPool, Slot
 from appconfig import Units, app_config
 from baseui import BaseUi
+from datatypes import Measurements
+from graphconfig import get_brush, get_pen
 from mainwindow import MainWindow
 import pyqtgraph as pg
 from savedataagent import SaveDataAgent
 from settingsdialog import SettingsDialog
-
-
-@dataclass
-class MeasSeries:
-    times: List[float]
-    values: List[float]
 
 
 class GraphicalUi(BaseUi):
@@ -25,15 +19,23 @@ class GraphicalUi(BaseUi):
     def __init__(self, parent: Optional[QObject] = None):
         super(GraphicalUi, self).__init__(parent)
         self.window = MainWindow()  # type: ignore[no-untyped-call]
+        self.data: Dict[str, Measurements] = {
+            "raw": Measurements([], []),
+            "avg": Measurements([], []),
+            "mark": Measurements([], []),
+        }
         self.init_ui()
         self.settings_dlg = SettingsDialog()
         self.save_data_agent = SaveDataAgent(self.window)
         self.connect_signals()
         self.window.show()
-        self.meas: Dict[str, MeasSeries] = {}
         self.threadpool = QThreadPool()
         self.recording = False
-        self.data_lines: Dict[str, pg.PlotDataItem.PlotDataItem] = {}
+        self.num_chan = app_config.num_channels()
+        self.data_lines: List[Dict[str, Optional[pg.PlotDataItem.PlotDataItem]]] = []
+        for _ in range(self.num_chan):
+            self.data_lines.append({"raw": None, "avg": None, "mark": None})
+        logging.info(f"self.meas keys: {self.data.keys()}")
 
     def connect_signals(self) -> None:
         self.window.ui.actionQuit.triggered.connect(self.send_quit)
@@ -47,24 +49,24 @@ class GraphicalUi(BaseUi):
         self.window.ui.addMarkButton.setEnabled(self.recording)
 
     def init_ui(self) -> None:
-        self.window.ui.tempValue.setText("- ? -")
+        self.window.ui.tempValue_0.setText("- ? -")
+        self.window.ui.tempValue_1.setText("- ? -")
         self.window.ui.elapsedTimeValue.setText(f"{timedelta(0)}")
         self.window.ui.graphWindow.setBackground("#e0e0e0")
         self.window.ui.graphWindow.clear()
-        self.meas = {}
+        self.data["raw"] = Measurements([], [])
+        self.data["avg"] = Measurements([], [])
 
     def save_results_as(self) -> None:
         self.save_data_agent.save(
-            self.meas["raw"].times,
-            self.meas["raw"].values,
+            self.data["raw"],
             auto_save_file=False,
             gui=True,
         )
 
     def save_results(self) -> None:
         self.save_data_agent.save(
-            self.meas["raw"].times,
-            self.meas["raw"].values,
+            self.data["raw"],
             auto_save_file=True,
             gui=True,
         )
@@ -75,67 +77,98 @@ class GraphicalUi(BaseUi):
     def average_samples(self, samples: List[float], num_samples: int) -> float:
         return sum(samples[-num_samples:]) / num_samples
 
-    def add_sample(self, series_name: str, elapsed_sec: float, value: float) -> None:
-        if series_name not in self.meas:
-            self.meas[series_name] = MeasSeries([elapsed_sec], [value])
+    def add_sample(self, series_name: str, elapsed_sec: float, values: List[float]) -> None:
+        if series_name not in self.data:
+            logging.error(f"Unrecognized data series, {series_name}")
         else:
-            self.meas[series_name].times.append(elapsed_sec)
-            self.meas[series_name].values.append(value)
+            self.data[series_name].times.append(elapsed_sec)
+            self.data[series_name].values.extend(values)
 
     def update_graph(
         self,
         series_name: str,
         *,
-        pen: QPen,
         symbol: Optional[str] = None,
         symbol_size: Optional[int] = None,
-        symbol_brush: Optional[QBrush] = None,
     ) -> None:
-        if series_name in self.data_lines:
-            self.data_lines[series_name].setData(
-                self.meas[series_name].times, self.meas[series_name].values
-            )
-        else:
-            self.data_lines[series_name] = self.window.ui.graphWindow.plot(
-                self.meas[series_name].times,
-                self.meas[series_name].values,
-                pen=pen,
-                symbol=symbol,
-                symbolSize=symbol_size,
-                symbolBrush=symbol_brush,
-            )
-
-    @Slot(str, float)
-    def update_value(self, timestamp: str, value: float) -> None:
-        elapsed_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f") - self.start_time
-        logging.info(f"({elapsed_time.total_seconds()}, {value})")
-
-        # round elapsed time to the nearest second
-        elapsed_time = timedelta(seconds=int(elapsed_time.total_seconds()))
-        self.window.ui.elapsedTimeValue.setText(f"{elapsed_time}")
-
-        # update the temperature value
-        if math.isnan(value):
-            self.window.ui.tempValue.setText("- ? -")
-        else:
-            if app_config.units() == Units.DEG_F:
-                scaled_value = value * 9.0 / 5.0 + 32.0
+        for channel in range(self.num_chan):
+            if self.data_lines[channel][series_name] is not None:
+                plot_data_item: pg.PlotDataItem.PlotDataItem = self.data_lines[channel][
+                    series_name
+                ]
+                plot_data_item.setData(
+                    self.data[series_name].times,
+                    self.data[series_name].values[channel :: self.num_chan],
+                )
             else:
-                scaled_value = value
-            self.window.ui.tempValue.setText(f"{scaled_value:.1f} °{app_config.units().value}")
+                logging.info(f"Keys of self.meas: {self.data.keys()}")
+                self.data_lines[channel][series_name] = self.window.ui.graphWindow.plot(
+                    self.data[series_name].times,
+                    self.data[series_name].values[channel :: self.num_chan],
+                    pen=get_pen(series_name, channel),
+                    symbol=symbol,
+                    symbolSize=symbol_size,
+                    symbolBrush=get_brush(series_name),
+                )
+
+    def set_value_label(self, channel: int, text: str) -> None:
+        if channel == 0:
+            self.window.ui.tempValue_0.setText(text)
+        else:
+            self.window.ui.tempValue_1.setText(text)
+
+    @Slot(str, int, float)
+    def update_value(self, timestamp: str, value_str: str) -> None:
+
+        value_list = list(map(float, value_str.split(";")))
+
+        if len(value_list) <= self.num_chan and len(value_list) > 0:
+            elapsed_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f") - self.start_time
+            logging.info(f"({elapsed_time.total_seconds()}, {value_list})")
+
+            # round elapsed time to the nearest second
+            elapsed_time = timedelta(seconds=int(elapsed_time.total_seconds()))
+            self.window.ui.elapsedTimeValue.setText(f"{elapsed_time}")
+
+            # update the temperature values
+            scaled_value_list: List[float] = []
+            for channel in range(self.num_chan):
+                if math.isnan(value_list[channel]):
+                    self.set_value_label(channel, "- ? -")
+                    scaled_value_list.append(value_list[channel])
+                else:
+                    if app_config.units() == Units.DEG_F:
+                        scaled_value_list.append(value_list[channel] * 9.0 / 5.0 + 32.0)
+                    else:
+                        scaled_value_list.append(value_list[channel])
+                    self.set_value_label(
+                        channel, f"{scaled_value_list[channel]:.1f} °{app_config.units().value}"
+                    )
+
             if self.recording:
                 # Update the plot line for the instantaneous ("raw") measurement
-                self.add_sample("raw", elapsed_time.total_seconds(), scaled_value)
-                self.update_graph("raw", pen=pg.mkPen(255, 0, 0))
-
-                # Plot the running average
-                running_avg_count = min(
-                    len(self.meas["raw"].values),
-                    int(app_config.averaging_time() / app_config.sample_period()),
+                self.add_sample("raw", elapsed_time.total_seconds(), scaled_value_list)
+                self.update_graph(
+                    "raw",
                 )
-                running_avg = self.average_samples(self.meas["raw"].values, running_avg_count)
-                self.add_sample("avg", elapsed_time.total_seconds(), running_avg)
-                self.update_graph("avg", pen=pg.mkPen(0, 0, 255))
+
+                # Plot the running averages
+                running_avgs: List[float] = []
+                for channel in range(self.num_chan):
+                    averaging_sample_set: List[float] = self.data["raw"].values[
+                        channel :: self.num_chan
+                    ]
+                    running_avg_count = min(
+                        len(averaging_sample_set),
+                        int(app_config.averaging_time() / app_config.sample_period()),
+                    )
+                    running_avgs.append(
+                        self.average_samples(averaging_sample_set, running_avg_count)
+                    )
+                self.add_sample("avg", elapsed_time.total_seconds(), running_avgs)
+                self.update_graph(
+                    "avg",
+                )
 
     @Slot()
     def on_graph_button_clicked(self) -> None:
@@ -154,12 +187,15 @@ class GraphicalUi(BaseUi):
     @Slot()
     def on_add_mark_button_clicked(self) -> None:
         logging.info(f"Mark set at {datetime.now()}")
-        if "raw" in self.meas:
-            self.add_sample("mark", self.meas["raw"].times[-1], self.meas["raw"].values[-1])
+
+        if "raw" in self.data:
+            self.add_sample(
+                "mark",
+                self.data["raw"].times[-1],
+                self.data["raw"].values[-self.num_chan :],
+            )
             self.update_graph(
                 "mark",
-                pen=QPen(Qt.PenStyle.NoPen),
                 symbol="|",
                 symbol_size=25,
-                symbol_brush=pg.mkBrush((0, 128, 0)),
             )

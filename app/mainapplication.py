@@ -33,9 +33,9 @@ class MainApplication(QApplication):
 
             from sensors.spitempsensor import SpiTempSensor
 
-            self.sensor = SpiTempSensor(0, self)
+            self.sensor = SpiTempSensor(app_config.num_channels(), self)
         elif sensor_type == Sensors.SIM:
-            self.sensor = MockSensor(self)
+            self.sensor = MockSensor(app_config.num_channels(), self)
 
         # Create the timer to trigger measurements
         self.timer = QTimer(self)

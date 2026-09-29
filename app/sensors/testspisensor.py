@@ -46,7 +46,7 @@ if __name__ == "__main__":
     )
     while True:
         print(f"{datetime.now()}: {sensor.resistance:.1f} Ω")
-        dev_value = sensor.temperature
+        dev_value = float(sensor.temperature)
         if args.fahrenheit:
             scaled_value = dev_value * 9.0 / 5.0 + 32.0
             units = "°F"
