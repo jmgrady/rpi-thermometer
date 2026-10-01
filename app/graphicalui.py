@@ -24,6 +24,20 @@ class GraphicalUi(BaseUi):
             "avg": Measurements([], []),
             "mark": Measurements([], []),
         }
+        self.plot_names: Dict[str, List[str]] = {
+            "raw": [
+                "T1",
+                "T2",
+            ],
+            "avg": [
+                "T1 (avg)",
+                "T2 (avg)",
+            ],
+            "mark": [
+                "",
+                "",
+            ],
+        }
         self.init_ui()
         self.settings_dlg = SettingsDialog()
         self.save_data_agent = SaveDataAgent(self.window)
@@ -51,9 +65,11 @@ class GraphicalUi(BaseUi):
     def init_ui(self) -> None:
         self.window.ui.tempValue_0.setText("- ? -")
         self.window.ui.tempValue_1.setText("- ? -")
+        self.window.ui.tempValue_1.setVisible(app_config.num_channels() > 1)
         self.window.ui.elapsedTimeValue.setText(f"{timedelta(0)}")
         self.window.ui.graphWindow.setBackground("#e0e0e0")
         self.window.ui.graphWindow.clear()
+        self.window.ui.graphWindow.addLegend()
         self.data["raw"] = Measurements([], [])
         self.data["avg"] = Measurements([], [])
 
@@ -99,6 +115,7 @@ class GraphicalUi(BaseUi):
                 plot_data_item.setData(
                     self.data[series_name].times,
                     self.data[series_name].values[channel :: self.num_chan],
+                    name=self.plot_names[series_name][channel],
                 )
             else:
                 logging.info(f"Keys of self.meas: {self.data.keys()}")
@@ -109,6 +126,7 @@ class GraphicalUi(BaseUi):
                     symbol=symbol,
                     symbolSize=symbol_size,
                     symbolBrush=get_brush(series_name),
+                    name=self.plot_names[series_name][channel],
                 )
 
     def set_value_label(self, channel: int, text: str) -> None:
